@@ -1,12 +1,3 @@
-# e4 sample application
+# Maven OSGi Plugin
 
-The repository contains a sample application built with pure maven and hence it allows to develop e4 applications 
-in Netbeans and IntelliJ IDEA as well
-
-## Maven Plugin
-
-## Eclipse
-
-## Netbeans
-
-## IntelliJ
+This plugin is similar to the maven:exec-plugin but allows to launch e4 OSGi-Applications
