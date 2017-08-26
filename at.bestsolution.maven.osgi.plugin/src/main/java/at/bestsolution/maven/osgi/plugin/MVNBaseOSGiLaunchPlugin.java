@@ -31,6 +31,9 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 	@Parameter
 	protected Properties vmProperties;
 	
+	@Parameter
+	protected Map<String, Integer> startLevels;
+	
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	protected MavenProject project;
 	
@@ -183,23 +186,26 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 	}
 	
 	private Integer getStartLevel(Manifest m) {
-		// TODO Read product-file???
 		String name = bundleName(m);
-		switch (name) {
-		case "org.eclipse.core.runtime":
-			return 4;
-		case "org.eclipse.equinox.common":
-			return 2;
-		case "org.eclipse.equinox.ds":
-			return 2;
-		case "org.eclipse.equinox.event":
-			return 2;
-		case "org.eclipse.equinox.simpleconfigurator":
-			return 1;
-		case "org.eclipse.osgi":
-			return -1;
-		default:
-			return null;
+		if( startLevels != null ) {
+			return startLevels.get(name);
+		} else {
+			switch (name) {
+			case "org.eclipse.core.runtime":
+				return 4;
+			case "org.eclipse.equinox.common":
+				return 2;
+			case "org.eclipse.equinox.ds":
+				return 2;
+			case "org.eclipse.equinox.event":
+				return 2;
+			case "org.eclipse.equinox.simpleconfigurator":
+				return 1;
+			case "org.eclipse.osgi":
+				return -1;
+			default:
+				return null;
+			}			
 		}
 	}
 	
