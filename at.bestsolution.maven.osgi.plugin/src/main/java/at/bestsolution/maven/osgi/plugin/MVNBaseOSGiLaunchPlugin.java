@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +17,7 @@ import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
+import java.util.zip.ZipFile;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
@@ -134,9 +136,10 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 				if( "org.eclipse.osgi".equals(b.symbolicName) ) {
 					continue;
 				}
+				
 				writer.append(b.symbolicName);
 				writer.append("," + b.version);
-				writer.append(",file:" + b.path.toAbsolutePath().toString());
+				writer.append(",file:" + generateLocalPath(b,configurationDir.resolve(".explode")).toString());
 				writer.append("," + b.startLevel); // Start Level
 				writer.append("," + b.autoStart); // Auto-Start
 				writer.append(LF);
@@ -146,6 +149,44 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 			throw new RuntimeException(e);
 		}
 		return bundleInfo;
+	}
+	
+	private Path generateLocalPath(Bundle b, Path explodeDir) {
+		if( b.dirShape && Files.isRegularFile(b.path) ) {
+			Path p = explodeDir.resolve(b.symbolicName+"_"+b.version);
+			if( ! Files.exists(p) ) {
+				try(ZipFile z = new ZipFile(b.path.toFile()) ) {
+					z.stream().forEach( e -> {
+						Path ep = explodeDir.resolve(e.getName());
+						if( e.isDirectory() ) {
+							try {
+								Files.createDirectories(ep);
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						} else {
+							try(OutputStream out = Files.newOutputStream(ep);
+									InputStream in = z.getInputStream(e)) {
+								byte[] buf = new byte[1024];
+								int l;
+								while( (l = in.read(buf)) != -1 ) {
+									out.write(buf, 0, l);
+								}
+							} catch (IOException e2) {
+								// TODO: handle exception
+								e2.printStackTrace();
+							}
+						}
+					});
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}
+			return p;
+		}
+		return b.path.toAbsolutePath();
 	}
 	
 	private Bundle map(Artifact a) {
@@ -214,18 +255,20 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 		public final String version;
 		public final Integer startLevel;
 		public final Path path;
+		public final boolean dirShape;
 		public final boolean autoStart;
 		
 		public Bundle(Manifest m, Path path) {
-			this( bundleName(m), m.getMainAttributes().getValue("Bundle-Version"), getStartLevel(m), path, getStartLevel(m) != null);
+			this( bundleName(m), m.getMainAttributes().getValue("Bundle-Version"), getStartLevel(m), path, getStartLevel(m) != null, "dir".equals(m.getMainAttributes().getValue("Eclipse-BundleShape")));
 		}
 		
-		public Bundle(String symbolicName, String version, Integer startLevel, Path path, boolean autoStart) {
+		public Bundle(String symbolicName, String version, Integer startLevel, Path path, boolean autoStart, boolean dirShape) {
 			this.symbolicName = symbolicName;
 			this.version = version;
 			this.startLevel = startLevel == null ? 4 : startLevel;
 			this.path = path;
 			this.autoStart = autoStart;
+			this.dirShape = dirShape;
 		}
 	}
 }
