@@ -1,13 +1,36 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>at.bestsolution</groupId>
-  <artifactId>maven-osgi-plugin</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>maven-plugin</packaging>
-  
-  <properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>at.bestsolution</groupId>
+	<artifactId>maven-osgi-exec-plugin</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>maven-plugin</packaging>
+
+	<properties>
 		<maven.version>3.5.0</maven.version>
 	</properties>
+
+	<name>at.bestsolution.maven-osgi-plugin</name>
+	<description>Maven Plug-in to execute OSGi-Applications from maven</description>
+	<url>https://github.com/BestSolution-at/maven-osgi-plugin</url>
+	<licenses>
+		<license>
+			<name>EPL - v 1.0</name>
+			<url>https://www.eclipse.org/legal/epl-v10.html</url>
+		</license>
+	</licenses>
+	<scm>
+		<url>https://github.com/BestSolution-at/maven-osgi-plugin</url>
+	</scm>
+	<developers>
+		<developer>
+			<name>Tom Schindl</name>
+			<organization>BestSolution.at</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
 
 	<dependencies>
 		<dependency>
