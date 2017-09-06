@@ -1,7 +1,6 @@
 package at.bestsolution.maven.osgi.exec;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -65,12 +64,14 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 				.getArtifacts()
 				.stream()
 				.map( this::map )
+				.filter( Optional::isPresent)
+				.map( Optional::get)
 				.collect(Collectors.toSet());
 		
 		
 		if( project.getPackaging().equals("jar") ) {
 			Path binary = project.getArtifact().getFile().toPath();
-			bundles.add(new Bundle(getManifest(binary),binary));			
+			bundles.add(new Bundle(getManifest(binary).get(),binary));			
 		}
 		
 		Path p = Paths.get(System.getProperty("java.io.tmpdir")).resolve(project.getArtifactId()).resolve("configuration");
@@ -189,12 +190,10 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 		return b.path.toAbsolutePath();
 	}
 	
-	private Bundle map(Artifact a) {
-		try {
-			return _map(a);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+	private Optional<Bundle> map(Artifact a) {
+		return getManifest(a.getFile().toPath())
+				.filter(MVNBaseOSGiLaunchPlugin::isBundle)
+				.map( m -> new Bundle(m, a.getFile().toPath()));
 	}
 	
 	private static String bundleName(Manifest m) {
@@ -202,30 +201,30 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 		return name.split(";")[0];
 	}
 	
-	private Bundle _map(Artifact a) throws IOException {
-		File file = a.getFile();
-		Path path = file.toPath();
-		Manifest m = getManifest(path);
-		return new Bundle(m, path);
+	private static boolean isBundle(Manifest m) {
+		return m.getMainAttributes().getValue("Bundle-SymbolicName") != null;
 	}
 	
-	private Manifest getManifest(Path p) {
+	private Optional<Manifest> getManifest(Path p) {
 		if (Files.isDirectory(p)) {
+			Path mf = p.resolve("META-INF").resolve("MANIFEST.MF");
+			if( ! Files.exists(mf) ) {
+				return Optional.empty();
+			}
 			try (InputStream in = Files
-					.newInputStream(p.resolve("META-INF").resolve("MANIFEST.MF"))) {
-				return new Manifest(in);
+					.newInputStream(mf)) {
+				return Optional.of(new Manifest(in));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		} else {
 			try (JarFile f = new JarFile(p.toFile())) {
-				return f.getManifest();
+				return Optional.of(f.getManifest());
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
-	}
-	
+	}	
 	private Integer getStartLevel(Manifest m) {
 		String name = bundleName(m);
 		if( startLevels != null ) {

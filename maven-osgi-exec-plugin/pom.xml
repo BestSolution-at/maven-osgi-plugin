@@ -10,7 +10,7 @@
 		<maven.version>3.5.0</maven.version>
 	</properties>
 
-	<name>at.bestsolution.maven-osgi-plugin</name>
+	<name>Maven OSGi Execution Plug-in</name>
 	<description>Maven Plug-in to execute OSGi-Applications from maven</description>
 	<url>https://github.com/BestSolution-at/maven-osgi-plugin</url>
 	<licenses>
