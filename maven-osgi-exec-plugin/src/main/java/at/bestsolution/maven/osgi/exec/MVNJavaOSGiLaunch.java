@@ -1,4 +1,4 @@
-package at.bestsolution.maven.osgi.plugin;
+package at.bestsolution.maven.osgi.exec;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

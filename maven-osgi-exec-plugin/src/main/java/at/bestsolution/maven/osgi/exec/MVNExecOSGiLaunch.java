@@ -1,4 +1,4 @@
-package at.bestsolution.maven.osgi.plugin;
+package at.bestsolution.maven.osgi.exec;
 
 import java.io.File;
 import java.io.IOException;
