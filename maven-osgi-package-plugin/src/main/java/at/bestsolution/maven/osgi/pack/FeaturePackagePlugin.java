@@ -5,10 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.function.Predicate;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -76,9 +78,9 @@ public class FeaturePackagePlugin extends AbstractMojo {
 			d.addChild(n);
 		}
 
-		for( Artifact a : project.getArtifacts() ) {
+		for( Dependency a : project.getDependencies() ) {
 			Xpp3Dom p = new Xpp3Dom("plugin");
-			Manifest mm = getManifest(a);
+			Manifest mm = getManifest(project.getArtifacts().stream().filter(filter(a)).findFirst().get());
 			p.setAttribute("id", bundleName(mm));
 //			p.setAttribute("download-size", "1"); // FIXME
 //			p.setAttribute("install-size", "1"); // FIXME
@@ -107,6 +109,13 @@ public class FeaturePackagePlugin extends AbstractMojo {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private Predicate<Artifact> filter(Dependency d) {
+		return a -> 
+			d.getArtifactId().equals(a.getArtifactId())
+			&& d.getGroupId().equals(a.getGroupId())
+			&& d.getVersion().equals(a.getVersion());
 	}
 	
 	private Manifest getManifest(Artifact a) {
