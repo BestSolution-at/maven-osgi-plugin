@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -80,7 +81,14 @@ public class FeaturePackagePlugin extends AbstractMojo {
 
 		for( Dependency a : project.getDependencies() ) {
 			Xpp3Dom p = new Xpp3Dom("plugin");
-			Manifest mm = getManifest(project.getArtifacts().stream().filter(filter(a)).findFirst().get());
+			Optional<Artifact> first = project.getArtifacts().stream().filter(filter(a)).findFirst();
+			if( ! first.isPresent() ) {
+				project.getArtifacts().stream().forEach( aa -> {
+					System.err.println(aa.getGroupId() + ":" +aa.getArtifactId()+":"+removeQualifier(aa.getVersion()));
+				});
+				throw new IllegalStateException("Could not find artifact for '" + a.getGroupId() + ":" +a.getArtifactId()+":"+removeQualifier(a.getVersion())+"'");
+			}
+			Manifest mm = getManifest(first.get());
 			p.setAttribute("id", bundleName(mm));
 //			p.setAttribute("download-size", "1"); // FIXME
 //			p.setAttribute("install-size", "1"); // FIXME
@@ -112,10 +120,19 @@ public class FeaturePackagePlugin extends AbstractMojo {
 	}
 	
 	private Predicate<Artifact> filter(Dependency d) {
+		String version = removeQualifier(d.getVersion());
 		return a -> 
 			d.getArtifactId().equals(a.getArtifactId())
 			&& d.getGroupId().equals(a.getGroupId())
-			&& d.getVersion().equals(a.getVersion());
+			&& version.equals(removeQualifier(a.getVersion()));
+	}
+	
+	private static String removeQualifier(String version) {
+		int idx = version.indexOf('-');
+		if( idx != -1 ) {
+			return version.substring(0,idx);
+		}
+		return version;
 	}
 	
 	private Manifest getManifest(Artifact a) {
