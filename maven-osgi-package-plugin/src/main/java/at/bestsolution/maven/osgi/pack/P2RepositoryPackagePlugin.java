@@ -41,7 +41,6 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		System.err.println("GENERATE P2 REPO");
 		for( Artifact a : project.getArtifacts() ) {
 			try (JarFile f = new JarFile(a.getFile())) {
 				handleJar(a, f);
