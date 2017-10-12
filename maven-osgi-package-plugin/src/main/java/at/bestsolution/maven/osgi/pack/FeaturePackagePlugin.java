@@ -83,9 +83,6 @@ public class FeaturePackagePlugin extends AbstractMojo {
 			Xpp3Dom p = new Xpp3Dom("plugin");
 			Optional<Artifact> first = project.getArtifacts().stream().filter(filter(a)).findFirst();
 			if( ! first.isPresent() ) {
-				project.getArtifacts().stream().forEach( aa -> {
-					System.err.println(aa.getGroupId() + ":" +aa.getArtifactId()+":"+removeQualifier(aa.getVersion()));
-				});
 				throw new IllegalStateException("Could not find artifact for '" + a.getGroupId() + ":" +a.getArtifactId()+":"+removeQualifier(a.getVersion())+"'");
 			}
 			Manifest mm = getManifest(first.get());
@@ -98,16 +95,17 @@ public class FeaturePackagePlugin extends AbstractMojo {
 			d.addChild(p);
 		}
 		
-		;
+		if( ! classesDir.exists() ) {
+			classesDir.mkdirs();
+		}
+		
 		try(PrintWriter writer = new PrintWriter(new File(classesDir,"feature.xml"))) {
 			XMLWriter xmlWriter = new PrettyPrintXMLWriter( writer, "UTF-8", null );
 			
 			Xpp3DomWriter.write(xmlWriter, d);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new MojoExecutionException("Unable to write feature.xml in '"+classesDir.getAbsolutePath()+"'",e);
 		}
-		
 		
 		Manifest m = new Manifest();
 		File file = new File(classesDir, "META-INF/MANIFEST.MF");
@@ -115,7 +113,7 @@ public class FeaturePackagePlugin extends AbstractMojo {
 		try( FileOutputStream out = new FileOutputStream(file) ) {
 			m.write(out);			
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new MojoExecutionException("Unable to write META-INF/MANIFEST.MF in '"+classesDir.getAbsolutePath()+"'",e);
 		}
 	}
 	
