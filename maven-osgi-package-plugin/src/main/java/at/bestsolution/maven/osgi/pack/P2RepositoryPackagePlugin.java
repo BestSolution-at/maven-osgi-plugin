@@ -13,7 +13,9 @@ package at.bestsolution.maven.osgi.pack;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -109,6 +111,6 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 		if( ! dir.exists() ) {
 			dir.mkdirs();
 		}
-		Files.copy(a.getFile().toPath(), dir.toPath().resolve(a.getFile().getName()));
+		Files.copy(a.getFile().toPath(), dir.toPath().resolve(a.getFile().getName()),StandardCopyOption.REPLACE_EXISTING);
 	}
 }
