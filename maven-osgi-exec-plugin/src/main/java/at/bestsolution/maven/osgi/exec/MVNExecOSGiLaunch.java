@@ -75,7 +75,7 @@ public class MVNExecOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 
 		Map<String, String> enviro = handleSystemEnvVariables();
 
-		CommandLine commandLine = new CommandLine("/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/bin/java");
+		CommandLine commandLine = new CommandLine( System.getProperty("java.home") + "/bin/java");
 
 		String[] args = commandArguments.toArray(new String[commandArguments.size()]);
 
