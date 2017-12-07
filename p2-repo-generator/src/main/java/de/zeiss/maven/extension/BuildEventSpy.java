@@ -27,7 +27,7 @@ public class BuildEventSpy extends AbstractEventSpy {
 
     @Override
     public void onEvent(Object event) throws Exception {
-//        logger.info("Maven Event: " + event);
+       // logger.info("Maven Event: " + event);
 //
 //        if (event instanceof RepositoryEvent) {
 //            logger.info("### RepoEvent: " + ((RepositoryEvent) event).getRepository());

@@ -45,26 +45,7 @@
             <version>${mavenVersion}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>tycho-core</artifactId>
-            <version>1.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-utils</artifactId>
-                </exclusion>
-            </exclusions>
-            <!-- VERY, VERY important. Otherwise Tycho classes are loaded for this extension with it's own classloader and raises ClasscastExceptions
-            used classes from tycho plugins later on
-            -->
-            <scope>provided</scope>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.eclipse.tycho</groupId>-->
-            <!--<artifactId>tycho-p2-facade</artifactId>-->
-            <!--<version>1.0.0</version>-->
-        <!--</dependency>-->
+
         <!--
             Test dependencies
         -->
