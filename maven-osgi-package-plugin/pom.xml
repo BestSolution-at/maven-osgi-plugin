@@ -6,10 +6,6 @@
 	<version>0.0.2-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
-	<properties>
-		<maven.version>3.5.0</maven.version>
-	</properties>
-
 	<name>Maven OSGi Execution Plug-in</name>
 	<description>Maven Plug-in to execute OSGi-Applications from maven</description>
 	<url>https://github.com/BestSolution-at/maven-osgi-plugin</url>
@@ -38,6 +34,12 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+
+	<properties>
+		<maven.version>3.5.0</maven.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -73,6 +75,8 @@
 
 
 		<!-- dependencies to annotations -->
+
+
 		<dependency>
 			<groupId>org.apache.maven.plugin-tools</groupId>
 			<artifactId>maven-plugin-annotations</artifactId>
@@ -189,6 +193,7 @@
 					<autoReleaseAfterClose>false</autoReleaseAfterClose>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 </project>

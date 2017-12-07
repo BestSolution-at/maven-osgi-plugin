@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Tom Schindl<tom.schindl@bestsolution.at> - initial API and implementation
+ *     Tom Schindl - initial API and implementation
  *******************************************************************************/
 package at.bestsolution.maven.osgi.exec;
 
@@ -47,7 +47,7 @@ public class MVNJavaOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 		cmd.add("-configuration");
 		cmd.add("file:" + ini.toString());
 		cmd.addAll(programArguments);
-		
+
 		System.getProperties().putAll(vmProperties);
 		
 		Thread t = new Thread() {

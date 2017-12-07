@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Tom Schindl<tom.schindl@bestsolution.at> - initial API and implementation
+ *     Tom Schindl - initial API and implementation
  *******************************************************************************/
 package at.bestsolution.maven.osgi.pack;
 
@@ -90,7 +90,8 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 //        launcher.addArguments(getAdditionalArgs());
 
         int result = launcher.execute(0);
-        if (result != 0) {
+        if (result != 0
+				) {
             throw new MojoFailureException("P2 publisher return code was " + result);
         }
 	}

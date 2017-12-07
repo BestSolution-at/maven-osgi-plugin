@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Tom Schindl<tom.schindl@bestsolution.at> - initial API and implementation
+ *     Tom Schindl - initial API and implementation
  *******************************************************************************/
 package at.bestsolution.maven.osgi.pack;
 
@@ -106,6 +106,10 @@ public class ProductPackagePlugin extends AbstractMojo {
 		}
 		
 		xppProduct.addChild(configurations);
+
+		if (!projectDir.exists()) {
+			projectDir.mkdirs();
+		}
 		
 		try(PrintWriter writer = new PrintWriter(new File(projectDir,product.id +".product"))) {
 			XMLWriter xmlWriter = new PrettyPrintXMLWriter( writer, "UTF-8", null );
