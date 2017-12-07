@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Tom Schindl<tom.schindl@bestsolution.at> - initial API and implementation
+ *     Tom Schindl - initial API and implementation
  *******************************************************************************/
 package at.bestsolution.maven.osgi.pack;
 
@@ -83,16 +83,17 @@ public class ProductPackagePlugin extends AbstractMojo {
 		
 		xppProduct.addChild(launcherArgs);
 		xppProduct.addChild(new Xpp3Dom("windowImages"));
-		
+
 		Xpp3Dom features = new Xpp3Dom("features");
 		project.getArtifacts().stream()
-			.filter(this::featureFilter)
-			.map( a -> {
-				Xpp3Dom feature = new Xpp3Dom("feature");
-				feature.setAttribute("id", a.getArtifactId());
-				return feature;
-			})
-			.forEach(features::addChild);
+				.filter(this::pomFilter)
+				.filter(this::featureFilter)
+				.map(a -> {
+					Xpp3Dom feature = new Xpp3Dom("feature");
+					feature.setAttribute("id", a.getArtifactId());
+					return feature;
+				})
+				.forEach(features::addChild);
 		xppProduct.addChild(features);
 		
 		Xpp3Dom configurations = new Xpp3Dom("configurations");
@@ -106,6 +107,10 @@ public class ProductPackagePlugin extends AbstractMojo {
 		}
 		
 		xppProduct.addChild(configurations);
+
+		if (!projectDir.exists()) {
+			projectDir.mkdirs();
+		}
 		
 		try(PrintWriter writer = new PrintWriter(new File(projectDir,product.id +".product"))) {
 			XMLWriter xmlWriter = new PrettyPrintXMLWriter( writer, "UTF-8", null );
@@ -115,7 +120,15 @@ public class ProductPackagePlugin extends AbstractMojo {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * @param artifact to check the packaging type
+	 * @return true if the artifact is not a pom file, false otherwise
+	 */
+	private boolean pomFilter(Artifact artifact) {
+		return !"pom".equalsIgnoreCase(artifact.getType());
+	}
+
 	private boolean featureFilter(Artifact a) {
 		try(JarFile jf = new JarFile(a.getFile()) ) {
 			return jf.getEntry("feature.xml") != null;	
