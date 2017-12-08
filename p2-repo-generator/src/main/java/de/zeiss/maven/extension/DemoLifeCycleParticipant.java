@@ -11,11 +11,16 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 
-@Component(role = AbstractMavenLifecycleParticipant.class, hint = "TychoMavenLifecycleListener")
+import at.bestsolution.maven.osgi.pack.P2RepositoryPackager;
+
+@Component(role = AbstractMavenLifecycleParticipant.class)
 public class DemoLifeCycleParticipant  extends AbstractMavenLifecycleParticipant {
 
     @Requirement
     private Logger logger;
+
+    @Requirement
+    private P2RepositoryPackager packager;
 
     @Override
     public void afterProjectsRead(MavenSession session) throws MavenExecutionException {

@@ -45,7 +45,11 @@
             <version>${mavenVersion}</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>at.bestsolution</groupId>
+            <artifactId>maven-osgi-package-support</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!--
             Test dependencies
         -->

@@ -4,7 +4,8 @@
 	<groupId>at.bestsolution</groupId>
 	<artifactId>maven-osgi-exec-plugin</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
-	<packaging>pom</packaging>
+
+    <packaging>pom</packaging>
 
 	<properties>
 		<maven.version>3.5.0</maven.version>
