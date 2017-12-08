@@ -1,7 +1,6 @@
 package de.zeiss.maven.extension;
 
 import java.io.File;
-import java.util.stream.Stream;
 
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
@@ -11,10 +10,12 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 
+import at.bestsolution.maven.osgi.pack.GenerationParameters;
 import at.bestsolution.maven.osgi.pack.P2RepositoryPackager;
 
 @Component(role = AbstractMavenLifecycleParticipant.class)
 public class DemoLifeCycleParticipant  extends AbstractMavenLifecycleParticipant {
+
 
     @Requirement
     private Logger logger;
@@ -50,6 +51,9 @@ public class DemoLifeCycleParticipant  extends AbstractMavenLifecycleParticipant
 
     private void createRepository(Repository p2Repo) {
         logger.info("##### REPO does not exist and will be created");
+        GenerationParameters parameters = GenerationParameters.builder().build();
+        packager.execute(parameters);
+
     }
 
 }
