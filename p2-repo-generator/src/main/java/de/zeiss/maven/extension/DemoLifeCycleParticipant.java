@@ -1,6 +1,7 @@
 package de.zeiss.maven.extension;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -13,14 +14,17 @@ import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 
 import at.bestsolution.maven.osgi.pack.GenerationParameters;
 import at.bestsolution.maven.osgi.pack.P2RepositoryPackager;
 
-@Component(role = AbstractMavenLifecycleParticipant.class)
+//@Component(role = AbstractMavenLifecycleParticipant.class)
 public class DemoLifeCycleParticipant  extends AbstractMavenLifecycleParticipant {
 
 
@@ -33,8 +37,8 @@ public class DemoLifeCycleParticipant  extends AbstractMavenLifecycleParticipant
     @Requirement
     private Invoker invoker;
 
-//    @Requirement
-//    private P2ApplicationLauncher launcher;
+    @Requirement
+    PlexusContainer container;
 
     @Override
     public void afterProjectsRead(MavenSession session) throws MavenExecutionException {
@@ -48,6 +52,22 @@ public class DemoLifeCycleParticipant  extends AbstractMavenLifecycleParticipant
                 break;
             }
         }
+
+        // ---------------
+        // Hack to get the lifecycleListener from tycho
+        Collection<ClassRealm> realms = session.getCurrentProject().getClassRealm().getWorld().getRealms();
+        ClassRealm tychoRealm = (ClassRealm) realms.toArray()[4];
+
+        ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(tychoRealm);
+        try {
+            container.lookup(AbstractMavenLifecycleParticipant.class,"TychoMavenLifecycleListener");
+        } catch (ComponentLookupException e) {
+            e.printStackTrace();
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldContextClassLoader);
+        }
+        // ---------------
 
         if (p2Repo != null) {
             if (!repositoryExists(p2Repo)) {
