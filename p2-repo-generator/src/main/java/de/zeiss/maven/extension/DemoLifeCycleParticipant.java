@@ -75,10 +75,10 @@ public class DemoLifeCycleParticipant  extends AbstractMavenLifecycleParticipant
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile( session.getCurrentProject().getFile());
         request.setGoals(Collections.singletonList("prepare-package" ) );
-
+        request.setProfiles(Collections.singletonList("create-repo"));
         Properties props = new Properties();
         props.put("p2.repo.processing", "true");
-        props.put("m2e.version", "xx");
+        props.put("tycho.mode", "maven");
 
         request.setProperties(props);
 
