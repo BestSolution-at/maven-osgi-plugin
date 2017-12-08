@@ -1,11 +1,18 @@
 package de.zeiss.maven.extension;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Properties;
 
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Repository;
+import org.apache.maven.shared.invoker.DefaultInvocationRequest;
+import org.apache.maven.shared.invoker.DefaultInvoker;
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
@@ -23,6 +30,12 @@ public class DemoLifeCycleParticipant  extends AbstractMavenLifecycleParticipant
     @Requirement
     private P2RepositoryPackager packager;
 
+    @Requirement
+    private Invoker invoker;
+
+//    @Requirement
+//    private P2ApplicationLauncher launcher;
+
     @Override
     public void afterProjectsRead(MavenSession session) throws MavenExecutionException {
         super.afterProjectsRead(session);
@@ -38,7 +51,7 @@ public class DemoLifeCycleParticipant  extends AbstractMavenLifecycleParticipant
 
         if (p2Repo != null) {
             if (!repositoryExists(p2Repo)) {
-                createRepository(p2Repo);
+                createRepository(session, p2Repo);
             }
 
         }
@@ -49,10 +62,37 @@ public class DemoLifeCycleParticipant  extends AbstractMavenLifecycleParticipant
         return file.exists();
     }
 
-    private void createRepository(Repository p2Repo) {
-        logger.info("##### REPO does not exist and will be created");
+    private void createRepository(MavenSession session, Repository p2Repo) {
+        logger.info("##### REPO does not exist");
+        if ("true".equals(System.getProperty("p2.repo.processing"))) {
+            logger.info("#### Repo is currently being created.");
+            return;
+        }
+
         GenerationParameters parameters = GenerationParameters.builder().build();
         packager.execute(parameters);
+
+        InvocationRequest request = new DefaultInvocationRequest();
+        request.setPomFile( session.getCurrentProject().getFile());
+        request.setGoals(Collections.singletonList("prepare-package" ) );
+
+        Properties props = new Properties();
+        props.put("p2.repo.processing", "true");
+        props.put("m2e.version", "xx");
+
+        request.setProperties(props);
+
+        Invoker invoker = new DefaultInvoker();
+        //invoker.setMavenHome(new File("/usr"));
+
+        try
+        {
+            invoker.execute( request );
+        }
+        catch (MavenInvocationException e)
+        {
+            e.printStackTrace();
+        }
 
     }
 

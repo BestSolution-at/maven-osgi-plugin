@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.zeiss.maven.extension</groupId>
+	<artifactId>e4-support</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+	</properties>
+
+	<modules>
+		<module>maven-osgi-exec-plugin</module>
+		<module>maven-osgi-package-plugin</module>
+		<module>maven-osgi-package-support</module>
+		<module>p2-repo-generator</module>
+
+	</modules>
+
+
+
+</project>
