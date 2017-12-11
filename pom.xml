@@ -14,7 +14,6 @@
 	<modules>
 		<module>maven-osgi-exec-plugin</module>
 		<module>maven-osgi-package-plugin</module>
-		<module>maven-osgi-package-support</module>
 		<module>p2-repo-generator</module>
 
 	</modules>

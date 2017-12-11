@@ -1,16 +1,13 @@
 package de.zeiss.maven.extension;
 
-import java.util.Collection;
-import java.util.Properties;
+import java.util.Optional;
 
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.eventspy.EventSpy;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.Dependency;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.annotations.Component;
@@ -27,6 +24,7 @@ public class TychoLifecycleController extends AbstractEventSpy {
     private static final String TYCHO_DISABLE_PROPERTY = "tycho.mode";
     private static final String TYCHO_OFF_VALUE = "maven";
     private static final String TYCHO_ON_VALUE = "";
+    private static final String TYCHO_CLASSLOADER_ID_PART = "tycho-maven-plugin";
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Requirement
@@ -67,11 +65,22 @@ public class TychoLifecycleController extends AbstractEventSpy {
         }
     }
 
+    /**
+     * Starts the tycho process by retrieving the tycho {@link AbstractMavenLifecycleParticipant} implementation and executing
+     * the method {@link AbstractMavenLifecycleParticipant#afterProjectsRead(MavenSession)}.
+     * That prepares the following tycho process.
+     *
+     * @param event
+     */
     private void startTychoProcess(ExecutionEvent event) {
-        ClassRealm tychoRealm = findTychoClassRealm(event);
+        Optional<ClassRealm> tychoRealm = findTychoClassRealm(event);
+        if (!tychoRealm.isPresent()) {
+            logger.error("Could not find the tycho classRealm and can not work properly. Give up.");
+            return;
+        }
 
         ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(tychoRealm);
+        Thread.currentThread().setContextClassLoader(tychoRealm.get());
 
         try {
             AbstractMavenLifecycleParticipant tychoMavenLifecycleListener = container.lookup(AbstractMavenLifecycleParticipant.class, "TychoMavenLifecycleListener");
@@ -91,38 +100,13 @@ public class TychoLifecycleController extends AbstractEventSpy {
         }
     }
 
-    private ClassRealm findTychoClassRealm(ExecutionEvent event) {
-        Collection<ClassRealm> realms = event.getSession().getCurrentProject().getClassRealm().getWorld().getRealms();
+    private Optional<ClassRealm> findTychoClassRealm(ExecutionEvent event) {
+        Optional<ClassRealm> tychoRealm = event.getSession().getCurrentProject().getClassRealm().getWorld().getRealms().stream().filter(realm -> realm.getId()
+                .contains(TYCHO_CLASSLOADER_ID_PART)).findFirst();
 
-        return (ClassRealm) realms.toArray()[4];
+        return tychoRealm;
     }
 
-    // groupId:artifactId:type:classifier:version --> siehe http://www.mojohaus.org/versions-maven-plugin/compare-dependencies-mojo.html
-    private String formatArtifact(Artifact artifact) {
-        return artifact.getGroupId() +
-               ":" + artifact.getArtifactId() +
-               ":" + (artifact.getType() != null ? artifact.getType() : "") +
-               ":" + (artifact.getClassifier() != null ? artifact.getClassifier() : "") +
-               ":" + artifact.getVersion();
-    }
-
-    private String formatDependency(Dependency dependency) {
-        return dependency.getGroupId() +
-               ":" + dependency.getArtifactId() +
-               ":" + (dependency.getType() != null ? dependency.getType() : "") +
-               ":" + (dependency.getClassifier() != null ? dependency.getClassifier() : "") +
-               ":" + dependency.getVersion() +
-               ":" + (dependency.getScope() != null ? dependency.getScope() : "");
-    }
-
-    private static String getExecutionProperty(final ExecutionEvent event, final String property) {
-        MavenSession mavenSession = event.getSession();
-        Properties systemProperties = mavenSession.getSystemProperties();
-        Properties userProperties = mavenSession.getUserProperties();
-        String output = userProperties.getProperty(property);
-        output = output == null ? systemProperties.getProperty(property) : output;
-        return output;
-    }
 
     @Override
     public void close() throws Exception {
