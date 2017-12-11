@@ -11,6 +11,9 @@
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 	</properties>
 
+	<description>
+		Reactor pom for all maven plugins and extensions used to build e4 applications with pure Maven approach
+	</description>
 	<modules>
 		<module>maven-osgi-exec-plugin</module>
 		<module>maven-osgi-package-plugin</module>
