@@ -6,7 +6,7 @@
 	<version>0.0.2-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
-	<name>Maven OSGi Execution Plug-in</name>
+	<name>Maven OSGi Package Plug-in</name>
 	<description>Maven Plug-in to execute OSGi-Applications from maven</description>
 	<url>https://github.com/BestSolution-at/maven-osgi-plugin</url>
 	<licenses>
