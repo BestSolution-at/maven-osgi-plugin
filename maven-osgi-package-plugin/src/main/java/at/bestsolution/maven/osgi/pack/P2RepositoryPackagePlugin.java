@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.StandardCopyOption;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
@@ -29,6 +30,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.logging.Logger;
 import org.eclipse.sisu.equinox.launching.internal.P2ApplicationLauncher;
 
 @Mojo(name="package-p2-repo", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE)
@@ -50,6 +52,9 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 	
 	@Component
     private P2ApplicationLauncher launcher;
+
+	@Component
+    private Logger logger;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -97,6 +102,10 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 	}
 	
 	private void handleJar(Artifact a, JarFile jf) throws IOException {
+        if (jf.getManifest() == null) {
+            throw new NoSuchFileException("The JAR file " + jf.getName() + " of artifact " + a + " has NO Manfifest file is not an OSGI bundle.");
+        }
+
 		ZipEntry entry = jf.getEntry("feature.xml");
 		File dir;
 		if( entry == null ) {
