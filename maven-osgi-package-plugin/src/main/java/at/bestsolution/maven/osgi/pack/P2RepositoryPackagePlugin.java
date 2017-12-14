@@ -13,7 +13,6 @@ package at.bestsolution.maven.osgi.pack;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.StandardCopyOption;
@@ -33,9 +32,13 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.logging.Logger;
 import org.eclipse.sisu.equinox.launching.internal.P2ApplicationLauncher;
 
+import static at.bestsolution.maven.osgi.pack.OsgiBundleVerifier.formatArtifact;
+
 @Mojo(name="package-p2-repo", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class P2RepositoryPackagePlugin extends AbstractMojo {
-	@Parameter(defaultValue = "${project}", required = true, readonly = true)
+
+
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
 	private MavenProject project;
 	
 	@Parameter(required=true, defaultValue = "${project.build.directory}/source")
@@ -56,9 +59,15 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 	@Component
     private Logger logger;
 
+    private OsgiBundleVerifier osgiVerifier = new OsgiBundleVerifier(logger);
+
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		for( Artifact a : project.getArtifacts() ) {
+            String coloredOsgiFlag = osgiVerifier.isBundle(a) ? "true" : DebugSupport.TerminalOutputStyling.RED.style("false");
+            String message = String.format("Processing artifact: %0$-70s - OSGI Bundle: %s", formatArtifact(a), coloredOsgiFlag);
+		    logger.debug(message);
+
 			try (JarFile f = new JarFile(a.getFile())) {
 				handleJar(a, f);
 			} catch (IOException e) {
@@ -103,16 +112,17 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 	
 	private void handleJar(Artifact a, JarFile jf) throws IOException {
         if (jf.getManifest() == null) {
-            throw new NoSuchFileException("The JAR file " + jf.getName() + " of artifact " + a + " has NO Manfifest file and is not an OSGI bundle.");
+            throw new NoSuchFileException("The JAR file " + jf.getName() + " of artifact " + formatArtifact(a) + " has NO Manfifest file and is not an OSGI " +
+                                          "bundle.");
         }
 
 		ZipEntry entry = jf.getEntry("feature.xml");
 		File dir;
 		if( entry == null ) {
-			if( jf.getManifest().getMainAttributes().getValue("Bundle-SymbolicName") == null) {
-				return;
-			}
-			
+            if (!osgiVerifier.isBundle(a)) {
+                return;
+            }
+
 			dir = new File(directory,"plugins");
 		} else {
 			dir = new File(directory,"features");
@@ -123,4 +133,8 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 		}
 		Files.copy(a.getFile().toPath(), dir.toPath().resolve(a.getFile().getName()),StandardCopyOption.REPLACE_EXISTING);
 	}
+
+
+
+
 }
