@@ -30,8 +30,12 @@ import java.util.zip.ZipFile;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.logging.Logger;
+
+import at.bestsolution.maven.osgi.support.OsgiBundleVerifier;
 
 public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 	private static final String LF = System.getProperty("line.separator");
@@ -56,7 +60,20 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 	
 	@Parameter
 	private boolean debug;
-	
+
+	@Component
+	private Logger logger;
+
+	private OsgiBundleVerifier osgiVerifier;
+
+
+	private OsgiBundleVerifier getOsgiVerifier() {
+		if (osgiVerifier == null) {
+			osgiVerifier = new OsgiBundleVerifier(logger);
+		}
+		return osgiVerifier;
+	}
+
 	private String toReferenceURL(Bundle element, boolean project) throws IOException {
 		StringBuilder w = new StringBuilder();
 		w.append("reference\\:file\\:" + element.path.toString());
@@ -81,7 +98,7 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 		
 		if( project.getPackaging().equals("jar") ) {
 			Path binary = project.getArtifact().getFile().toPath();
-			bundles.add(new Bundle(getManifest(binary).get(),binary));			
+			bundles.add(new Bundle(getOsgiVerifier().getManifest(project.getArtifact()).get(),binary));
 		}
 		
 		Path p = Paths.get(System.getProperty("java.io.tmpdir")).resolve(project.getArtifactId()).resolve("configuration");
@@ -201,9 +218,11 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 	}
 	
 	private Optional<Bundle> map(Artifact a) {
-		return getManifest(a.getFile().toPath())
+		Path pathToArtifact = a.getFile().toPath();
+		return getOsgiVerifier().getManifest(a)
 				.filter(MVNBaseOSGiLaunchPlugin::isBundle)
-				.map( m -> new Bundle(m, a.getFile().toPath()));
+				.map( m -> new Bundle(m, pathToArtifact));
+
 	}
 	
 	private static String bundleName(Manifest m) {
@@ -215,26 +234,7 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 		return m.getMainAttributes().getValue("Bundle-SymbolicName") != null;
 	}
 	
-	private Optional<Manifest> getManifest(Path p) {
-		if (Files.isDirectory(p)) {
-			Path mf = p.resolve("META-INF").resolve("MANIFEST.MF");
-			if( ! Files.exists(mf) ) {
-				return Optional.empty();
-			}
-			try (InputStream in = Files
-					.newInputStream(mf)) {
-				return Optional.of(new Manifest(in));
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		} else {
-			try (JarFile f = new JarFile(p.toFile())) {
-				return Optional.of(f.getManifest());
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}	
+
 	private Integer getStartLevel(Manifest m) {
 		String name = bundleName(m);
 		if( startLevels != null ) {
