@@ -62,12 +62,12 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		for (Artifact a : project.getArtifacts()) {
-			String coloredOsgiFlag = getOsgiVerifier().isBundle(a) ? "true"
-					: DebugSupport.TerminalOutputStyling.RED.style("false");
-			String message = String.format("Processing artifact: %0$-70s - OSGI Bundle: %s", formatArtifact(a),
-					coloredOsgiFlag);
-			logger.debug(message);
+
+	    project.getArtifacts().stream().filter(this::pomFilter).forEach(a -> {
+
+            String coloredOsgiFlag = osgiVerifier.isBundle(a) ? "true" : DebugSupport.TerminalOutputStyling.RED.style("false");
+            String message = String.format("Processing artifact: %0$-70s - OSGI Bundle: %s", formatArtifact(a), coloredOsgiFlag);
+		    logger.debug(message);
 
 			if (!a.getType().equals("pom"))
 				try (JarFile f = new JarFile(a.getFile())) {
@@ -76,7 +76,8 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 					// TODO Auto-generated catch block
 					throw new IllegalStateException(e);
 				}
-		}
+        });
+
 
 		try {
 			publishContent();
@@ -86,7 +87,11 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 		}
 	}
 
-	private void publishContent() throws MojoFailureException, MalformedURLException {
+    private boolean pomFilter(Artifact artifact) {
+        return ! "pom".equalsIgnoreCase(artifact.getType());
+    }
+
+    private void publishContent() throws MojoFailureException, MalformedURLException {
 		launcher.setWorkingDirectory(project.getBasedir());
 		launcher.setApplicationName("org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher");
 		launcher.addArguments("-artifactRepository", repositoryLocation.toURI().toURL().toString());

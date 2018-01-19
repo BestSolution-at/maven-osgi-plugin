@@ -76,7 +76,7 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 
 	private String toReferenceURL(Bundle element, boolean project) throws IOException {
 		StringBuilder w = new StringBuilder();
-		w.append("reference\\:file\\:" + element.path.toString());
+		w.append("reference\\:" + element.path.toUri().toString());
 
 		if (element.startLevel != null) {
 			w.append("@" + element.startLevel + "\\:start");
@@ -125,14 +125,14 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 				writer.append(LF);
 				writer.append("osgi.bundles.defaultStartLevel=4");
 				writer.append(LF);
-				writer.append("osgi.install.area=file\\:" + p.getParent().resolve("install").toString());
+				writer.append("osgi.install.area=" + p.getParent().resolve("install").toUri().toString());
 				writer.append(LF);
-				writer.append("osgi.framework=file\\:" + equinox.get().path.toString());
+				writer.append("osgi.framework=" + equinox.get().path.toUri().toString());				
 				writer.append(LF);
 				writer.append("eclipse.p2.data.area=@config.dir/.p2");
 				writer.append(LF);
-				writer.append("org.eclipse.equinox.simpleconfigurator.configUrl=file\\:"
-						+ bundlesInfo.toAbsolutePath().toString());
+				writer.append("org.eclipse.equinox.simpleconfigurator.configUrl="
+						+ bundlesInfo.toAbsolutePath().toUri().toString());
 				writer.append(LF);
 				writer.append("osgi.configuration.cascaded=false");
 				writer.append(LF);
