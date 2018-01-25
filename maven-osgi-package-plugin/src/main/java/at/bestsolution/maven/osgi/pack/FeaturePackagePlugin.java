@@ -160,7 +160,7 @@ public class FeaturePackagePlugin extends AbstractMojo {
 
         logger.error("List of artifacts which are no valid OSGI bundles: ");
 	    nonOsgiArtifacts.forEach(a -> {
-            String message = "\tDebugSupport.TerminalOutputStyling.HIGH_INTENSITY.style(formatArtifact(a))";
+            String message = "\t" + DebugSupport.TerminalOutputStyling.HIGH_INTENSITY.style(formatArtifact(a));
             logger.error(message);
         });
     }

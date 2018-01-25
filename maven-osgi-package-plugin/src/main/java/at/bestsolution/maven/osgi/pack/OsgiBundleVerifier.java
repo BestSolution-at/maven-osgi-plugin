@@ -22,6 +22,10 @@ final public class OsgiBundleVerifier {
     }
 
     public boolean isBundle(Artifact artifact) {
+        if ("pom".equalsIgnoreCase(artifact.getType())) {
+            return false;
+        }
+
         boolean isOsgi = false;
 
         try (JarFile f = new JarFile(artifact.getFile())) {
