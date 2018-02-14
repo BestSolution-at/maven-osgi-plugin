@@ -59,22 +59,20 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 	@Component
     private Logger logger;
 
-    private OsgiBundleVerifier osgiVerifier;
+    private OsgiBundleVerifier osgiVerifier = new OsgiBundleVerifier(logger);
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		for( Artifact a : project.getArtifacts() ) {
-            String coloredOsgiFlag = getOsgiVerifier().isBundle(a) ? "true" : DebugSupport.TerminalOutputStyling.RED.style("false");
+            String coloredOsgiFlag = osgiVerifier.isBundle(a) ? "true" : DebugSupport.TerminalOutputStyling.RED.style("false");
             String message = String.format("Processing artifact: %0$-70s - OSGI Bundle: %s", formatArtifact(a), coloredOsgiFlag);
 		    logger.debug(message);
 
-		    if (a.getType().equals("jar")) {
-				try (JarFile f = new JarFile(a.getFile())) {
-					handleJar(a, f);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					throw new IllegalStateException(e);
-				}
+			try (JarFile f = new JarFile(a.getFile())) {
+				handleJar(a, f);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				throw new IllegalStateException(e);
 			}
 		}
 		
@@ -85,7 +83,7 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 			throw new IllegalStateException(e);
 		}
 	}
-
+	
 	private void publishContent() throws MojoFailureException, MalformedURLException {
         launcher.setWorkingDirectory(project.getBasedir());
         launcher.setApplicationName("org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher");
@@ -121,7 +119,7 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 		ZipEntry entry = jf.getEntry("feature.xml");
 		File dir;
 		if( entry == null ) {
-            if (!getOsgiVerifier().isBundle(a)) {
+            if (!osgiVerifier.isBundle(a)) {
                 return;
             }
 
@@ -136,10 +134,7 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 		Files.copy(a.getFile().toPath(), dir.toPath().resolve(a.getFile().getName()),StandardCopyOption.REPLACE_EXISTING);
 	}
 
-	public OsgiBundleVerifier getOsgiVerifier() {
-		if (osgiVerifier == null) {
-			 osgiVerifier = new OsgiBundleVerifier(logger);
-		}
-		return osgiVerifier;
-	}
+
+
+
 }
