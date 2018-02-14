@@ -68,6 +68,7 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
             String message = String.format("Processing artifact: %0$-70s - OSGI Bundle: %s", formatArtifact(a), coloredOsgiFlag);
 		    logger.debug(message);
 
+		    if (!a.getType().equals("pom"))
 			try (JarFile f = new JarFile(a.getFile())) {
 				handleJar(a, f);
 			} catch (IOException e) {
