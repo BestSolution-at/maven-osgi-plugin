@@ -19,11 +19,13 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -39,18 +41,10 @@ public class ProductPackagePlugin extends AbstractMojo {
 	
 	@Parameter(required=true)
 	private Product product;
-	
-//	@Component
-//    private P2ApplicationLauncher launcher;
-//	
-//	@Parameter(defaultValue = "${project.build.directory}/repository")
-//    private File repositoryLocation;
-//	
-//	@Parameter(defaultValue = "${project.build.directory}/products")
-//    private File productDirectory;
 
-//	@Parameter(defaultValue="false", alias="feature-based")
-//	private boolean featureBased;
+
+	@Component
+	private Logger logger;
 	
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -115,9 +109,9 @@ public class ProductPackagePlugin extends AbstractMojo {
 		try(PrintWriter writer = new PrintWriter(new File(projectDir,product.id +".product"))) {
 			XMLWriter xmlWriter = new PrettyPrintXMLWriter( writer, "UTF-8", null );
 			Xpp3DomWriter.write(xmlWriter, xppProduct);
+
 		} catch (Throwable e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Problems on writing the .product file to " + projectDir, e);
 		}
 	}
 
@@ -131,26 +125,13 @@ public class ProductPackagePlugin extends AbstractMojo {
 
 	private boolean featureFilter(Artifact a) {
 		try(JarFile jf = new JarFile(a.getFile()) ) {
-			return jf.getEntry("feature.xml") != null;	
+			return jf.getEntry("feature.xml") != null;
+
 		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+			logger.warn("Could not get the JAR entry feature.xml from given artifact: " + a.getFile());
 		}
+
 		return false;
 	}
-	
-//	private List<Artifact> getDirectDependencies() {
-//		List<Artifact> rv = new ArrayList<>();
-//		for( Dependency d : project.getDependencies() ) {
-//			rv.add(project.getArtifacts().stream().filter(filter(d)).findFirst().get());
-//		}
-//		return rv;
-//	}
-//	
-//	private Predicate<Artifact> filter(Dependency d) {
-//		return a -> 
-//			d.getArtifactId().equals(a.getArtifactId())
-//			&& d.getGroupId().equals(a.getGroupId())
-//			&& d.getVersion().equals(a.getVersion());
-//	}
+
 }

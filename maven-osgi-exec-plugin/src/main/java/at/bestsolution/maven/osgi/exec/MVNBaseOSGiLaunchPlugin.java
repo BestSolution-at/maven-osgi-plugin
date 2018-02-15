@@ -33,6 +33,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 
 import at.bestsolution.maven.osgi.support.OsgiBundleVerifier;
@@ -62,7 +63,7 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 	private boolean debug;
 
 	@Component
-	private Logger logger;
+	protected Logger logger;
 
 	private OsgiBundleVerifier osgiVerifier;
 
@@ -112,8 +113,7 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 		try {
 			Files.createDirectories(p);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			logger.error("Can not create directories for " + p);
 		}
 		
 		if (simpleConfigurator.isPresent()) {
@@ -190,8 +190,7 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 							try {
 								Files.createDirectories(ep);
 							} catch (IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
+								logger.error("Failed to create directories for path " + ep, e1);
 							}
 						} else {
 							try(OutputStream out = Files.newOutputStream(ep);
@@ -202,14 +201,12 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 									out.write(buf, 0, l);
 								}
 							} catch (IOException e2) {
-								// TODO: handle exception
-								e2.printStackTrace();
+								logger.error("Can not explode bundle jar " + b.path + " to " + explodeDir, e2);
 							}
 						}
 					});
 				} catch (Exception e) {
-					// TODO: handle exception
-					e.printStackTrace();
+					logger.error("General error while unpacking bundle jar " + b.path, e);
 				}
 			}
 			return p;

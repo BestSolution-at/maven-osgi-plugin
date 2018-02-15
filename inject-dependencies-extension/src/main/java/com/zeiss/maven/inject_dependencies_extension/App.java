@@ -100,9 +100,9 @@ public class App extends DefaultModelReader {
 		}
 		
 		DefaultModelWriter writer = new DefaultModelWriter();
-		
-		
-		writer.write(new File("C:\\tmp\\feature\\pom.xml"), (Map<String, Object>) null, model);
+
+		String tmpPath = System.getProperty("java.io.tmpdir");
+		writer.write(new File(tmpPath + "/pom.xml"), (Map<String, Object>) null, model);
 		
 		return model;
 	}
