@@ -118,8 +118,8 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 
 	private void handleJar(Artifact a, JarFile jf) throws IOException {
 		if (jf.getManifest() == null) {
-			throw new NoSuchFileException("The JAR file " + jf.getName() + " of artifact " + formatArtifact(a)
-					+ " has NO Manfifest file and is not an OSGI " + "bundle.");
+//			throw new NoSuchFileException("The JAR file " + jf.getName() + " of artifact " + formatArtifact(a)
+//					+ " has NO Manfifest file and is not an OSGI " + "bundle.");
 		}
 
 		ZipEntry entry = jf.getEntry("feature.xml");

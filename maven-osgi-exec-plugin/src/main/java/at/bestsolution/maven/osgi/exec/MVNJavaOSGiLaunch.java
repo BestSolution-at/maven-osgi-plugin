@@ -22,12 +22,16 @@ import java.util.Optional;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.codehaus.plexus.logging.Logger;
 
 @Mojo(name="exec-osgi-java", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class MVNJavaOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
-	
+
+	private static final String EQUINOX_LAUNCHER_MAIN_CLASS = "org.eclipse.equinox.launcher.Main";
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		Path ini = generateConfigIni(project);
 		
@@ -53,12 +57,12 @@ public class MVNJavaOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 		Thread t = new Thread() {
 			public void run() {
 				try {
-					Class<?> cl = getContextClassLoader().loadClass("org.eclipse.equinox.launcher.Main");
+					Class<?> cl = getContextClassLoader().loadClass(EQUINOX_LAUNCHER_MAIN_CLASS);
 					Method m = cl.getDeclaredMethod("main", String[].class);
 					m.invoke(null, new Object[] {cmd.toArray(new String[0])});
+
 				} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("Can not invoke main-method for " + EQUINOX_LAUNCHER_MAIN_CLASS, e);
 				}
 			}
 		};
@@ -67,8 +71,7 @@ public class MVNJavaOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 		try {
 			t.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Error on waiting for Equinox launcher to finish.", e);
 		}
 	}
 }
