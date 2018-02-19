@@ -124,6 +124,9 @@ public class ProductPackagePlugin extends AbstractMojo {
 	}
 
 	private boolean featureFilter(Artifact a) {
+		if (a.getType().equals("pom"))
+			return false;
+		
 		try(JarFile jf = new JarFile(a.getFile()) ) {
 			return jf.getEntry("feature.xml") != null;
 
