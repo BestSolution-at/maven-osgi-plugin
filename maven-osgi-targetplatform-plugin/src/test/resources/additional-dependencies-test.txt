@@ -1,0 +1,1 @@
+at.bestsolution.efxclipse.eclipse,org.eclipse.osgi.compatibility.state,1.0.200
