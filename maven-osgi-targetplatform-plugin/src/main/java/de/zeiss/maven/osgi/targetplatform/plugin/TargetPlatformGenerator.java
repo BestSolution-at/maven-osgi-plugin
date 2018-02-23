@@ -63,32 +63,29 @@ public class TargetPlatformGenerator extends AbstractMojo {
                 additionalDependenciesFile, whitelistFile, featureFile, targetFeatureJarPrefix, efxclipseSite, efxclipseGenericRepositoryUrl), this.project);
 
         this.project.setPomFile(outputFileO);
-        
-        
 
         try {
             List<MavenProject> allProjects = session.getAllProjects();
 
-            allProjects.stream()
-                    .filter(p -> p.getArtifactId() != null && (p.getArtifactId().equals("sample.mvn.app") || p.getArtifactId().equals("sample.mvn.product")))
-                    .forEach(p -> {
-                        p.getProjectReferences().remove(project);
+            allProjects.stream().filter(p -> p.getArtifactId() != null && (p.getArtifactId().equals("sample.mvn.app")
+                    || p.getArtifactId().equals("sample.mvn.product") || p.getArtifactId().equals("sample.mvn.feature"))).forEach(p -> {
+                        p.getProjectReferences().clear();
                         List<org.apache.maven.model.Dependency> newDependencies = new ArrayList<>();
                         newDependencies.addAll(this.project.getDependencies());
                         newDependencies.addAll(p.getDependencies());
-                        newDependencies = newDependencies.stream()
-                                .filter(np -> generatingDependencies.stream().filter(gp -> gp.getArtifactId().equals(np.getArtifactId())).count() == 0)
-                                .collect(Collectors.toList());
-                        newDependencies.removeAll(generatingDependencies);
+                        // newDependencies = newDependencies.stream()
+                        // .filter(np -> generatingDependencies.stream().filter(gp -> gp.getArtifactId().equals(np.getArtifactId())).count() == 0)
+                        // .collect(Collectors.toList());
+                       // newDependencies.removeAll(generatingDependencies);
                         p.setDependencies(newDependencies);
                     });
-            
-            
-            List<MavenProject> newProje = new ArrayList<>();
-            newProje.addAll(session.getProjects());
-            newProje.remove(this.project);
-            session.setProjects(newProje);
-            session.setProjectDependencyGraph(null);
+
+//            List<MavenProject> newProje = new ArrayList<>();
+//            newProje.addAll(session.getProjects());
+//            newProje = newProje.stream().filter(p->!p.getArtifactId().equals(this.project.getArtifactId())).collect(Collectors.toList());
+//            
+//            session.setProjects(newProje);
+            // session.setProjectDependencyGraph(null);
         } catch (NullPointerException ex) {
             ex.printStackTrace();
         }
