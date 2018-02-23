@@ -32,8 +32,7 @@ public class PomWriter {
 		try {
 			writer.write(file, (Map<String, Object>) null, model);
 		} catch (IOException e) {
-			e.printStackTrace();
-			   // TODO: use logger
+            LoggingSupport.logErrorMessage(e.getMessage(), e);
 		}
 	}
 

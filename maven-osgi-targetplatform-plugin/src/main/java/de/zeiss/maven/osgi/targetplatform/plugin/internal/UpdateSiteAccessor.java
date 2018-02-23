@@ -18,8 +18,9 @@ public class UpdateSiteAccessor {
             InputStream siteInputStream = connection.getInputStream();
             return extractRelativeTargetPlatformFeatureJarUrl(siteInputStream, targetJarUrlPrefix);
         } catch (IOException e) {
-            e.printStackTrace();
-            // TODO: use logger
+
+            LoggingSupport.logErrorMessage(e.getMessage(), e);
+
             return null;
         }
     }

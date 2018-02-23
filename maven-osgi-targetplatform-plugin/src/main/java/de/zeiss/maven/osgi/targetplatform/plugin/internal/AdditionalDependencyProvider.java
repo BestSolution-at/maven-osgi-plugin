@@ -1,7 +1,5 @@
 package de.zeiss.maven.osgi.targetplatform.plugin.internal;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -34,8 +32,8 @@ public class AdditionalDependencyProvider {
             additionalDependencies
                     .add(createDependency(rawDependency[GROUP_ID_POSITION], rawDependency[ARTIFACT_ID_POSITION], rawDependency[VERSION_POSITION]));
         } else {
-            // TODO:log error
-            System.err.println(String.format("Additional dependency %s from %s cannot be parsed.", line, additionalDependenciesFile));
+            
+            LoggingSupport.logErrorMessage(String.format("Additional dependency %s from %s cannot be parsed.", line, additionalDependenciesFile));
         }
     }
 

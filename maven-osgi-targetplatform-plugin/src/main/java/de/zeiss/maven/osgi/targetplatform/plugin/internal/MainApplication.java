@@ -2,7 +2,6 @@ package de.zeiss.maven.osgi.targetplatform.plugin.internal;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;

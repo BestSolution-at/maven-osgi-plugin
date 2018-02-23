@@ -10,7 +10,7 @@ import org.apache.commons.cli.ParseException;
  * Responsible for handling command line input.
  *
  */
-public class CommandLineHandler implements ParameterProvider{
+public class CommandLineHandler implements ParameterProvider {
 
     private static final String EFXCLIPSE_GENERIC_REPOSITORY_URL = "efxclipseGenericRepositoryUrl";
     private static final String EFXCLIPSE_SITE = "efxclipseSite";
@@ -32,8 +32,8 @@ public class CommandLineHandler implements ParameterProvider{
             line = new GnuParser().parse(commandLineOptionsDefinition, args);
             valid = true;
         } catch (ParseException e) {
-            // TODO: use logger
-            System.out.println("Illegal command line arguments: " + e.getMessage());
+
+            LoggingSupport.logErrorMessage("Illegal command line arguments: " + e.getMessage());
 
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("-", commandLineOptionsDefinition);

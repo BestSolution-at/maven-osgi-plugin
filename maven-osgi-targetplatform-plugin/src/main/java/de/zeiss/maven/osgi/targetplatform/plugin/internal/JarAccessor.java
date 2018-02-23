@@ -19,8 +19,7 @@ public class JarAccessor {
 			JarFile jarFile = jarConnection.getJarFile();
 			return jarFile.getInputStream(jarFile.getEntry(entryName));
 		} catch (IOException e) {
-			e.printStackTrace();
-			   // TODO: use logger
+            LoggingSupport.logErrorMessage(e.getMessage(), e);
 		}
 		return null;
 	}
