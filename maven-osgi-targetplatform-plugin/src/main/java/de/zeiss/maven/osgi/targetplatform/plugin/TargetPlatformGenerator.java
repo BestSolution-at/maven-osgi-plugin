@@ -30,23 +30,23 @@ public class TargetPlatformGenerator extends AbstractMojo {
     @Parameter(required = true, readonly = true)
     private String outputFile;
 
-    @Parameter(required = true, readonly = true)
+    @Parameter(defaultValue = "/additional-dependencies.txt", required = false, readonly = true)
     private String additionalDependenciesFile;
 
-    @Parameter(required = true, readonly = true)
+    @Parameter(defaultValue = "/whitelist.txt", required = false, readonly = true)
     private String whitelistFile;
 
-    @Parameter(required = true, readonly = true)
+    @Parameter(defaultValue = "feature.xml", required = false, readonly = true)
     private String featureFile;
 
-    @Parameter(required = true, readonly = true)
+    @Parameter(defaultValue = "features/org.eclipse.fx.target.feature_", required = false, readonly = true)
     private String targetFeatureJarPrefix;
 
     @Parameter(defaultValue = "site.xml", required = false, readonly = true)
     private String efxclipseSite;
 
     @Parameter(required = true, readonly = true)
-    private String efxclipseGenericRepositoryUrl;
+    private String efxclipseUpdateSite;
 
     @Component
     private Logger logger;
@@ -60,7 +60,7 @@ public class TargetPlatformGenerator extends AbstractMojo {
         List<Dependency> generatingDependencies = this.project.getDependencies();
 
         File outputFileO = MainApplication.run(new DefaultParameterProvider(project.getVersion(), project.getArtifactId(), project.getGroupId(), outputFile,
-                additionalDependenciesFile, whitelistFile, featureFile, targetFeatureJarPrefix, efxclipseSite, efxclipseGenericRepositoryUrl), this.project);
+                additionalDependenciesFile, whitelistFile, featureFile, targetFeatureJarPrefix, efxclipseSite, efxclipseUpdateSite), this.project);
 
         this.project.setPomFile(outputFileO);
 
