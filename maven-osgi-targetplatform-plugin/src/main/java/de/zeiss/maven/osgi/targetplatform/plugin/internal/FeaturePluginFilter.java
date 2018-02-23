@@ -1,7 +1,5 @@
 package de.zeiss.maven.osgi.targetplatform.plugin.internal;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.channels.Channels;
 import java.util.HashSet;

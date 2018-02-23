@@ -52,6 +52,7 @@ public class MainApplication {
 
         if (project != null) {
             project.setDependencies(new ArrayList<>(dependencies));
+            
         }
 
         File outputFile = new File(parameterProvider.getOutputFile());
