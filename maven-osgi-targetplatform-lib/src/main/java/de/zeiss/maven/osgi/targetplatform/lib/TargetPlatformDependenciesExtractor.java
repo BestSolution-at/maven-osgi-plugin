@@ -13,7 +13,6 @@ import de.zeiss.maven.osgi.targetplatform.lib.internal.FeaturePluginExtractor;
 import de.zeiss.maven.osgi.targetplatform.lib.internal.FeaturePluginFilter;
 import de.zeiss.maven.osgi.targetplatform.lib.internal.FeaturePluginToMavenDependencyConverter;
 import de.zeiss.maven.osgi.targetplatform.lib.internal.JarAccessor;
-import de.zeiss.maven.osgi.targetplatform.lib.internal.LoggingSupport;
 import de.zeiss.maven.osgi.targetplatform.lib.internal.ParameterProvider;
 import de.zeiss.maven.osgi.targetplatform.lib.internal.UpdateSiteAccessor;
 
@@ -25,10 +24,7 @@ import de.zeiss.maven.osgi.targetplatform.lib.internal.UpdateSiteAccessor;
 public class TargetPlatformDependenciesExtractor {
     
     
-    public static void setLogger(Logger logger){
-        LoggingSupport.LOGGER = logger;
-    }
-    
+  
 
     /**
      * Does the dependencies extraction.

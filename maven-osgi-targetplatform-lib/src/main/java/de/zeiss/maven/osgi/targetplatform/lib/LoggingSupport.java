@@ -1,4 +1,4 @@
-package de.zeiss.maven.osgi.targetplatform.lib.internal;
+package de.zeiss.maven.osgi.targetplatform.lib;
 
 import org.codehaus.plexus.logging.Logger;
 
@@ -8,8 +8,13 @@ import org.codehaus.plexus.logging.Logger;
  */
 public class LoggingSupport {
 
-    public static Logger LOGGER;
+    private static Logger LOGGER;
 
+    public static void setLogger(Logger logger){
+        LoggingSupport.LOGGER = logger;
+    }
+    
+    
     public static void logErrorMessage(String message, Throwable ex) {
         if (LOGGER != null) {
             LOGGER.error(message, ex);

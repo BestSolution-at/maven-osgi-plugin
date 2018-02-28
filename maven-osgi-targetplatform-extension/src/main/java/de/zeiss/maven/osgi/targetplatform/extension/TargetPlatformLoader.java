@@ -20,8 +20,8 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.IOUtil;
 
 import de.zeiss.maven.osgi.targetplatform.extension.internal.PropertyBasedParameterProvider;
+import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
 import de.zeiss.maven.osgi.targetplatform.lib.TargetPlatformDependenciesExtractor;
-import de.zeiss.maven.osgi.targetplatform.lib.internal.LoggingSupport;
 
 /**
  * Accesses the target platform site, extracts dependencies from there and loads the dependencies into the current maven model.
@@ -54,7 +54,7 @@ public class TargetPlatformLoader extends DefaultModelReader {
 
     public Model read(Reader input, Map<String, ?> options) throws IOException, ModelParseException {
 
-        TargetPlatformDependenciesExtractor.setLogger(logger);
+        LoggingSupport.setLogger(logger);
 
         Model model = super.read(input, options);
         String activatePlugin = model.getProperties().getProperty(ACTIVATE_MAVEN_OSGI_TARGETPLATFORM_EXTENSION, "false");

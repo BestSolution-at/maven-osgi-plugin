@@ -8,6 +8,8 @@ import java.net.URLConnection;
 import org.eclipse.pde.internal.core.isite.ISiteFeature;
 import org.eclipse.pde.internal.core.site.WorkspaceSiteModel;
 
+import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
+
 /**
  * Responsible for accessing the update site and providing the path to the target platform jar that is contained in the site.xml.
  * 

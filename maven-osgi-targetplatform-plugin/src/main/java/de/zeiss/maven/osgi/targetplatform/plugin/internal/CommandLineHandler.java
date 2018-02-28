@@ -6,7 +6,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import de.zeiss.maven.osgi.targetplatform.lib.internal.LoggingSupport;
+import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
 import de.zeiss.maven.osgi.targetplatform.lib.internal.ParameterProvider;
 
 /**

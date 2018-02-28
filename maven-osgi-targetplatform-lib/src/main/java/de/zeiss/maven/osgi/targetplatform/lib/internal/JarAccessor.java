@@ -6,6 +6,8 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.jar.JarFile;
 
+import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
+
 /**
  * Accesses the target platform jar on the update site and provides the feature.xml entry as an input stream.
  * 

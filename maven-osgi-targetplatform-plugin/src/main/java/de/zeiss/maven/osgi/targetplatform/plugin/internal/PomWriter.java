@@ -10,7 +10,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.DefaultModelWriter;
 
-import de.zeiss.maven.osgi.targetplatform.lib.internal.LoggingSupport;
+import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
 
 /**
  * Responsible for writing the pom file.

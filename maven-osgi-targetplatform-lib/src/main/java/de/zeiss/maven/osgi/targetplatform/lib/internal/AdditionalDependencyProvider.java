@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.apache.maven.model.Dependency;
 
+import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
+
 /**
  * Responsible for adding additional dependencies form a text file that are not included in the feature site. 
  * 
