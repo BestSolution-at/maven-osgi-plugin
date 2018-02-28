@@ -12,28 +12,28 @@ import org.eclipse.core.runtime.Path;
  * 
  *
  */
-public class FileWrapper extends File {
+class FileWrapper extends File {
 
-	private final InputStream inputStream;
+    private final InputStream inputStream;
 
-	protected FileWrapper(InputStream inputStream) {
-		super(new Path("."), null);
-		this.inputStream = inputStream;
-	}
+    protected FileWrapper(InputStream inputStream) {
+        super(new Path("."), null);
+        this.inputStream = inputStream;
+    }
 
-	@Override
-	public IPath getLocation() {
-		return new Path(".");
-	}
+    @Override
+    public IPath getLocation() {
+        return new Path(".");
+    }
 
-	@Override
-	public boolean exists() {
-		return true;
-	}
+    @Override
+    public boolean exists() {
+        return true;
+    }
 
-	@Override
-	public InputStream getContents(boolean force) throws CoreException {
-		return inputStream;
-	}
+    @Override
+    public InputStream getContents(boolean force) throws CoreException {
+        return inputStream;
+    }
 
 }

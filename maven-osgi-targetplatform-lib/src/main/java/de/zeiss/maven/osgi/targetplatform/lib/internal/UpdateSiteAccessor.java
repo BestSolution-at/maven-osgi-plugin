@@ -16,9 +16,9 @@ import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
  * 
  *
  */
-public class UpdateSiteAccessor {
+class UpdateSiteAccessor {
 
-    public static String readRelativeTargetPlatformFeatureJarUrl(String siteUrl, String targetJarUrlPrefix) {
+    static String readRelativeTargetPlatformFeatureJarUrl(String siteUrl, String targetJarUrlPrefix) {
 
         try {
             URL url = new URL(siteUrl);
@@ -33,7 +33,7 @@ public class UpdateSiteAccessor {
         }
     }
 
-    public static String extractRelativeTargetPlatformFeatureJarUrl(InputStream siteInputStream, String urlPrefix) {
+    static String extractRelativeTargetPlatformFeatureJarUrl(InputStream siteInputStream, String urlPrefix) {
         WorkspaceSiteModel model = new WorkspaceSiteModel(new FileWrapper(siteInputStream));
         model.load();
         for (ISiteFeature f : model.getSite().getFeatures()) {

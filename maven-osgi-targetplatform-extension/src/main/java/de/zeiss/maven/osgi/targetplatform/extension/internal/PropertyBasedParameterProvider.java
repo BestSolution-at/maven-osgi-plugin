@@ -2,7 +2,7 @@ package de.zeiss.maven.osgi.targetplatform.extension.internal;
 
 import java.util.Properties;
 
-import de.zeiss.maven.osgi.targetplatform.lib.internal.ParameterProvider;
+import de.zeiss.maven.osgi.targetplatform.lib.ParameterProvider;
 
 public class PropertyBasedParameterProvider implements ParameterProvider {
 

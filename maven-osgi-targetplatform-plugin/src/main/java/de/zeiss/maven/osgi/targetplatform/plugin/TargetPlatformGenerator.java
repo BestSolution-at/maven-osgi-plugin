@@ -17,7 +17,6 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.logging.Logger;
 
 import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
-import de.zeiss.maven.osgi.targetplatform.lib.TargetPlatformDependenciesExtractor;
 import de.zeiss.maven.osgi.targetplatform.plugin.internal.DefaultParameterProvider;
 import de.zeiss.maven.osgi.targetplatform.plugin.internal.MainApplication;
 

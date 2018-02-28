@@ -14,7 +14,7 @@ import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
  * 
  *
  */
-public class FeaturePluginFilter implements Predicate<IFeaturePlugin> {
+class FeaturePluginFilter implements Predicate<IFeaturePlugin> {
 
     private final Set<String> whiteList;
 

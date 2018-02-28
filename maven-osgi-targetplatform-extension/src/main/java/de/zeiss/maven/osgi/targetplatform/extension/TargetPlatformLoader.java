@@ -58,10 +58,12 @@ public class TargetPlatformLoader extends DefaultModelReader {
 
         Model model = super.read(input, options);
         String activatePlugin = model.getProperties().getProperty(ACTIVATE_MAVEN_OSGI_TARGETPLATFORM_EXTENSION, "false");
-        if ("true".equals(activatePlugin))
-        {
-            for (Dependency dependency : TargetPlatformDependenciesExtractor
-                    .doMavenDependenciesGeneration(new PropertyBasedParameterProvider(model.getProperties()))) {
+        if ("true".equals(activatePlugin)) {
+            
+            TargetPlatformDependenciesExtractor targetPlatformDependenciesExtractor = new TargetPlatformDependenciesExtractor(
+                    new PropertyBasedParameterProvider(model.getProperties()));
+
+            for (Dependency dependency : targetPlatformDependenciesExtractor.doMavenDependenciesGeneration()) {
                 model.addDependency(dependency);
             }
         }

@@ -13,12 +13,12 @@ import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
  * 
  *
  */
-public class JarAccessor {
+class JarAccessor {
 
     private static final String JAR_URL_SUFFIX = "!/";
     private static final String JAR_URL_PREFIX = "jar:";
 
-    public static InputStream readEntry(String jarUrl, String entryName) {
+    static InputStream readEntry(String jarUrl, String entryName) {
 
         try {
             URL url = new URL(convertToJarUrl(jarUrl));

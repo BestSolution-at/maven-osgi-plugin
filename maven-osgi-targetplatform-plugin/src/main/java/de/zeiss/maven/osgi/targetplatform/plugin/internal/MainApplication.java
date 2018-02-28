@@ -9,7 +9,6 @@ import org.apache.maven.project.MavenProject;
 
 import de.zeiss.maven.osgi.targetplatform.lib.TargetPlatformDependenciesExtractor;
 
-
 /**
  * Main Process.
  * 
@@ -30,11 +29,11 @@ public class MainApplication {
 
     public static File run(ExtendedParameterProvider parameterProvider, MavenProject project) {
 
-        Set<Dependency> dependencies = TargetPlatformDependenciesExtractor.doMavenDependenciesGeneration(parameterProvider);
+        Set<Dependency> dependencies = new TargetPlatformDependenciesExtractor(parameterProvider).doMavenDependenciesGeneration();
 
         if (project != null) {
             project.setDependencies(new ArrayList<>(dependencies));
-            
+
         }
 
         File outputFile = new File(parameterProvider.getOutputFile());
@@ -43,5 +42,4 @@ public class MainApplication {
         return outputFile;
     }
 
-   
 }

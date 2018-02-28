@@ -11,27 +11,26 @@ import org.eclipse.pde.internal.core.feature.WorkspaceFeatureModel;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 
 /**
- * Responsible for the extraction of the feature plugins from a feature.xml
- * file.
+ * Responsible for the extraction of the feature plugins from a feature.xml file.
  *
  */
-public class FeaturePluginExtractor {
+class FeaturePluginExtractor {
 
-	/**
-	 * Does the extraction of the feature plugins.
-	 * 
-	 * @param featureInputStream
-	 * @return
-	 */
-	public static Set<IFeaturePlugin> extractFeaturePlugins(InputStream featureInputStream) {
+    /**
+     * Does the extraction of the feature plugins.
+     * 
+     * @param featureInputStream
+     * @return
+     */
+    public static Set<IFeaturePlugin> extractFeaturePlugins(InputStream featureInputStream) {
 
-		WorkspaceFeatureModel fmodel = new WorkspaceFeatureModel(new FileWrapper(featureInputStream));
+        WorkspaceFeatureModel fmodel = new WorkspaceFeatureModel(new FileWrapper(featureInputStream));
 
-		fmodel.load();
+        fmodel.load();
 
-		Map<String, IFeaturePlugin> map = new HashMap<>();
-		Arrays.stream(fmodel.getFeature().getPlugins()).forEach(p->map.put(p.getId(), p));
-		return new HashSet<>(map.values());
-	}
+        Map<String, IFeaturePlugin> map = new HashMap<>();
+        Arrays.stream(fmodel.getFeature().getPlugins()).forEach(p -> map.put(p.getId(), p));
+        return new HashSet<>(map.values());
+    }
 
 }

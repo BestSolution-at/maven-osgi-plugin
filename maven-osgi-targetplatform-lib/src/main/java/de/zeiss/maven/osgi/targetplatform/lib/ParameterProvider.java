@@ -1,4 +1,4 @@
-package de.zeiss.maven.osgi.targetplatform.lib.internal;
+package de.zeiss.maven.osgi.targetplatform.lib;
 
 
 /**

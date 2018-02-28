@@ -7,13 +7,13 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
-import de.zeiss.maven.osgi.targetplatform.lib.internal.ParameterProvider;
+import de.zeiss.maven.osgi.targetplatform.lib.ParameterProvider;
 
 /**
  * Responsible for handling command line input.
  *
  */
-public class CommandLineHandler implements ExtendedParameterProvider {
+class CommandLineHandler implements ExtendedParameterProvider {
 
     private static final String EFXCLIPSE_GENERIC_REPOSITORY_URL = "efxclipseGenericRepositoryUrl";
     private static final String EFXCLIPSE_SITE = "efxclipseSite";
@@ -30,7 +30,7 @@ public class CommandLineHandler implements ExtendedParameterProvider {
     private CommandLine line;
     private boolean valid;
 
-    public CommandLineHandler(String args[]) {
+    CommandLineHandler(String args[]) {
         try {
             line = new GnuParser().parse(commandLineOptionsDefinition, args);
             valid = true;
@@ -45,7 +45,7 @@ public class CommandLineHandler implements ExtendedParameterProvider {
         }
     }
 
-    public boolean hasValidArguments() {
+    boolean hasValidArguments() {
         return valid;
     }
 
@@ -114,7 +114,4 @@ public class CommandLineHandler implements ExtendedParameterProvider {
         return opt;
     }
 
-    public static void main(String[] args) {
-        new CommandLineHandler(new String[] {});
-    }
 }
