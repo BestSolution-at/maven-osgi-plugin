@@ -6,12 +6,12 @@ import de.zeiss.maven.osgi.targetplatform.lib.ParameterProvider;
 
 public class PropertyBasedParameterProvider implements ParameterProvider {
 
-    private String additionalDependenciesFile;
-    private String whitelistFile;
-    private String featureFile;
-    private String targetFeatureJarPrefix;
-    private String efxclipseSite;
-    private String efxclipseGenericRepositoryUrl;
+    private final String additionalDependenciesFile;
+    private final String whitelistFile;
+    private final String featureFile;
+    private final String targetFeatureJarPrefix;
+    private final String efxclipseSite;
+    private final String efxclipseGenericRepositoryUrl;
 
     public PropertyBasedParameterProvider(Properties properties) {
         this.additionalDependenciesFile = properties.getProperty("additional.dependencies.file", "/additional-dependencies.txt");
