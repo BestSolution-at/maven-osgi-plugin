@@ -30,7 +30,7 @@ import de.zeiss.maven.osgi.targetplatform.lib.TargetPlatformDependenciesExtracto
 @Component(role = ModelReader.class, hint = "default")
 public class TargetPlatformLoader extends DefaultModelReader {
 
-    private static final String ACTIVATE_MAVEN_OSGI_TARGETPLATFORM_EXTENSION = "activate.maven.osgi.targetplatform.extension";
+    private static final String REPOSITORY_URL_PROPERTY_KEY = "efxclipse.generic.repository.url";
 
     @Requirement
     Logger logger;
@@ -57,8 +57,8 @@ public class TargetPlatformLoader extends DefaultModelReader {
         LoggingSupport.setLogger(logger);
 
         Model model = super.read(input, options);
-        String activatePlugin = model.getProperties().getProperty(ACTIVATE_MAVEN_OSGI_TARGETPLATFORM_EXTENSION, "false");
-        if ("true".equals(activatePlugin)) {
+        String repositoryUrl = model.getProperties().getProperty(REPOSITORY_URL_PROPERTY_KEY, "false");
+        if (!"false".equals(repositoryUrl)) {
             
             TargetPlatformDependenciesExtractor targetPlatformDependenciesExtractor = new TargetPlatformDependenciesExtractor(
                     new PropertyBasedParameterProvider(model.getProperties()));
