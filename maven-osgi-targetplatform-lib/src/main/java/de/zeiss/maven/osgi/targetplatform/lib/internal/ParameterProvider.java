@@ -1,6 +1,11 @@
-package de.zeiss.maven.osgi.targetplatform.plugin.internal;
+package de.zeiss.maven.osgi.targetplatform.lib.internal;
 
 
+/**
+ * Provides all necessary parameters.
+ * 
+ *
+ */
 public interface ParameterProvider {
 
     String getVersion();
@@ -8,8 +13,6 @@ public interface ParameterProvider {
     String getArtifactId();
 
     String getGroupId();
-
-    String getOutputFile();
 
     String getAdditionalDependenciesFile();
 

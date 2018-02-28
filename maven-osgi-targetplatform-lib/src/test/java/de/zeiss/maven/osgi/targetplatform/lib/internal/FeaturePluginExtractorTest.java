@@ -1,4 +1,4 @@
-package de.zeiss.maven.osgi.targetplatform.plugin.internal;
+package de.zeiss.maven.osgi.targetplatform.lib.internal;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 import org.junit.Test;
+
+import de.zeiss.maven.osgi.targetplatform.lib.internal.FeaturePluginExtractor;
 
 
 public class FeaturePluginExtractorTest {

@@ -1,4 +1,4 @@
-package de.zeiss.maven.osgi.targetplatform.plugin.internal;
+package de.zeiss.maven.osgi.targetplatform.lib.internal;
 
 import java.io.InputStream;
 import java.util.HashSet;
@@ -7,6 +7,11 @@ import java.util.Set;
 
 import org.apache.maven.model.Dependency;
 
+/**
+ * Responsible for adding additional dependencies form a text file that are not included in the feature site. 
+ * 
+ *
+ */
 public class AdditionalDependencyProvider {
 
     private static final int GROUP_ID_POSITION = 0;

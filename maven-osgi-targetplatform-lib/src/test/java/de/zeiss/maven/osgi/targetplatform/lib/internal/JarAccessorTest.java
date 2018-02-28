@@ -1,4 +1,4 @@
-package de.zeiss.maven.osgi.targetplatform.plugin.internal;
+package de.zeiss.maven.osgi.targetplatform.lib.internal;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 
 import org.junit.Test;
+
+import de.zeiss.maven.osgi.targetplatform.lib.internal.JarAccessor;
 
 public class JarAccessorTest {
 

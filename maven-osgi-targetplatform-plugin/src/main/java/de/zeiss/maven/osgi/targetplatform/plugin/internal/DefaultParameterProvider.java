@@ -1,6 +1,6 @@
 package de.zeiss.maven.osgi.targetplatform.plugin.internal;
 
-public class DefaultParameterProvider implements ParameterProvider {
+public class DefaultParameterProvider implements ExtendedParameterProvider {
 
     private String version;
     private String artifactId;

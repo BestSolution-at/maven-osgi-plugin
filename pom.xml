@@ -18,6 +18,8 @@
 		<module>maven-osgi-exec-plugin</module>
 		<module>maven-osgi-package-plugin</module>
 		<module>tycho-lifecycle-controller</module>
+		<module>maven-osgi-targetplatform-lib</module>
+		<module>maven-osgi-targetplatform-extension</module>
 		<module>maven-osgi-targetplatform-plugin</module>
 	</modules>
 

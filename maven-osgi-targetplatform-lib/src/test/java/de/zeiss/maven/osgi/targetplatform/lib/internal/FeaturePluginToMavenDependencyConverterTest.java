@@ -1,4 +1,4 @@
-package de.zeiss.maven.osgi.targetplatform.plugin.internal;
+package de.zeiss.maven.osgi.targetplatform.lib.internal;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -11,6 +11,8 @@ import org.apache.maven.model.Dependency;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import de.zeiss.maven.osgi.targetplatform.lib.internal.FeaturePluginToMavenDependencyConverter;
 
 public class FeaturePluginToMavenDependencyConverterTest {
 

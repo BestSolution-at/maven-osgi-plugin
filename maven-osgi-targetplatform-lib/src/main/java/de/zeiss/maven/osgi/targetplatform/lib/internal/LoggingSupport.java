@@ -1,7 +1,11 @@
-package de.zeiss.maven.osgi.targetplatform.plugin.internal;
+package de.zeiss.maven.osgi.targetplatform.lib.internal;
 
 import org.codehaus.plexus.logging.Logger;
 
+/**
+ * Provides access to the maven logger when started inside the plexus framework. Otherwise the output is printed normally.
+ *
+ */
 public class LoggingSupport {
 
     public static Logger LOGGER;

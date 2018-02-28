@@ -1,4 +1,4 @@
-package de.zeiss.maven.osgi.targetplatform.plugin.internal;
+package de.zeiss.maven.osgi.targetplatform.lib.internal;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -10,6 +10,9 @@ import java.util.Set;
 
 import org.apache.maven.model.Dependency;
 import org.junit.Test;
+
+import de.zeiss.maven.osgi.targetplatform.lib.internal.AdditionalDependencyProvider;
+import de.zeiss.maven.osgi.targetplatform.lib.internal.FeaturePluginFilter;
 
 public class AdditionalDependencyProviderTest {
 

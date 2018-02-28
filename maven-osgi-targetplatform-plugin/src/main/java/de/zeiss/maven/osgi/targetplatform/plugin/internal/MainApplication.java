@@ -1,14 +1,14 @@
 package de.zeiss.maven.osgi.targetplatform.plugin.internal;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
-import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
+
+import de.zeiss.maven.osgi.targetplatform.lib.TargetPlatformDependenciesExtractor;
+
 
 /**
  * Main Process.
@@ -28,26 +28,9 @@ public class MainApplication {
 
     }
 
-    public static File run(ParameterProvider parameterProvider, MavenProject project) {
+    public static File run(ExtendedParameterProvider parameterProvider, MavenProject project) {
 
-        String parentUrl = parameterProvider.getEfxclipseGenericRepositoryUrl();
-
-        String relativeUrlToJarFile = UpdateSiteAccessor.readRelativeTargetPlatformFeatureJarUrl(parentUrl + "/" + parameterProvider.getEfxclipseSite(),
-                parameterProvider.getTargetFeatureJarPrefix());
-
-        InputStream featureFileInputStream = JarAccessor.readEntry(parentUrl + "/" + relativeUrlToJarFile, parameterProvider.getFeatureFile());
-
-        Set<IFeaturePlugin> featurePlugins = FeaturePluginExtractor.extractFeaturePlugins(featureFileInputStream);
-
-        InputStream resource = FeaturePluginFilter.class.getResourceAsStream(parameterProvider.getWhitelistFile());
-
-        featurePlugins = featurePlugins.stream().filter(new FeaturePluginFilter(resource)).collect(Collectors.toSet());
-
-        Set<Dependency> dependencies = FeaturePluginToMavenDependencyConverter.convert(featurePlugins);
-
-        resource = FeaturePluginFilter.class.getResourceAsStream(parameterProvider.getAdditionalDependenciesFile());
-
-        dependencies.addAll(AdditionalDependencyProvider.readAdditionalDependencies(resource));
+        Set<Dependency> dependencies = TargetPlatformDependenciesExtractor.doMavenDependenciesGeneration(parameterProvider);
 
         if (project != null) {
             project.setDependencies(new ArrayList<>(dependencies));
@@ -59,4 +42,6 @@ public class MainApplication {
 
         return outputFile;
     }
+
+   
 }

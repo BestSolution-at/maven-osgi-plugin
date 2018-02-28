@@ -16,8 +16,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.logging.Logger;
 
+import de.zeiss.maven.osgi.targetplatform.lib.internal.LoggingSupport;
 import de.zeiss.maven.osgi.targetplatform.plugin.internal.DefaultParameterProvider;
-import de.zeiss.maven.osgi.targetplatform.plugin.internal.LoggingSupport;
 import de.zeiss.maven.osgi.targetplatform.plugin.internal.MainApplication;
 
 @Mojo(name = "provide-target-dependencies", defaultPhase = LifecyclePhase.VALIDATE, requiresDependencyResolution = ResolutionScope.COMPILE)

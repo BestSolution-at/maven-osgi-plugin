@@ -6,11 +6,14 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import de.zeiss.maven.osgi.targetplatform.lib.internal.LoggingSupport;
+import de.zeiss.maven.osgi.targetplatform.lib.internal.ParameterProvider;
+
 /**
  * Responsible for handling command line input.
  *
  */
-public class CommandLineHandler implements ParameterProvider {
+public class CommandLineHandler implements ExtendedParameterProvider {
 
     private static final String EFXCLIPSE_GENERIC_REPOSITORY_URL = "efxclipseGenericRepositoryUrl";
     private static final String EFXCLIPSE_SITE = "efxclipseSite";

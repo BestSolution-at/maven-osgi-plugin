@@ -1,4 +1,4 @@
-package de.zeiss.maven.osgi.targetplatform.plugin.internal;
+package de.zeiss.maven.osgi.targetplatform.lib.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +8,12 @@ import java.net.URLConnection;
 import org.eclipse.pde.internal.core.isite.ISiteFeature;
 import org.eclipse.pde.internal.core.site.WorkspaceSiteModel;
 
+/**
+ * Responsible for accessing the update site and providing the path to the target platform jar that is contained in the site.xml.
+ * 
+ * 
+ *
+ */
 public class UpdateSiteAccessor {
 
     public static String readRelativeTargetPlatformFeatureJarUrl(String siteUrl, String targetJarUrlPrefix) {

@@ -1,4 +1,4 @@
-package de.zeiss.maven.osgi.targetplatform.plugin.internal;
+package de.zeiss.maven.osgi.targetplatform.lib.internal;
 
 import java.io.InputStream;
 import java.nio.channels.Channels;
@@ -9,6 +9,11 @@ import java.util.function.Predicate;
 
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 
+/**
+ * Filters the dependencies according to a white list given as a text file.
+ * 
+ *
+ */
 public class FeaturePluginFilter implements Predicate<IFeaturePlugin> {
 
     private final Set<String> whiteList;
