@@ -8,6 +8,12 @@ import de.zeiss.maven.osgi.targetplatform.lib.internal.ParameterProvider;
  */
 public interface ExtendedParameterProvider extends ParameterProvider {
 
+    String getVersion();
+
+    String getArtifactId();
+
+    String getGroupId();
+
     String getOutputFile();
 
 }

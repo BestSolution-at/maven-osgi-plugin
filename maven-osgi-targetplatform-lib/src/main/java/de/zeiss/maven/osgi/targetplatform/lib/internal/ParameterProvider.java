@@ -8,12 +8,6 @@ package de.zeiss.maven.osgi.targetplatform.lib.internal;
  */
 public interface ParameterProvider {
 
-    String getVersion();
-
-    String getArtifactId();
-
-    String getGroupId();
-
     String getAdditionalDependenciesFile();
 
     String getWhitelistFile();
