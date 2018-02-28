@@ -19,8 +19,10 @@ import de.zeiss.maven.osgi.targetplatform.lib.TargetPlatformDependenciesExtracto
 public class MainApplication {
 
     private final ExtendedParameterProvider parameterProvider;
+    
     private Set<Dependency> dependencies;
     private File outputFile;
+    private MavenProject generatorProject;
 
     public MainApplication(ExtendedParameterProvider parameterProvider) {
         this.parameterProvider = parameterProvider;
@@ -37,21 +39,32 @@ public class MainApplication {
         PomWriter.writePom(outputFile, parameterProvider.getGroupId(), parameterProvider.getArtifactId(), parameterProvider.getVersion(), dependencies);
     }
 
-    public void doPostProcessing(MavenProject project, MavenSession session) {
-        project.setDependencies(new ArrayList<>(dependencies));
+    public void doPostProcessing(MavenProject generatorProject, MavenSession session) {
 
-        project.setPomFile(outputFile);
+        // Update the generator project
+        this.generatorProject = generatorProject;        
+        this.generatorProject.setDependencies(new ArrayList<>(dependencies));
+        this.generatorProject.setPomFile(outputFile);
 
-        List<MavenProject> allProjects = session.getAllProjects();
+        // Update the other projects that use the platform
+        session.getAllProjects().stream().filter(this::onlyRelevantProjects).forEach(this::processProject);
+    }
 
-        allProjects.stream().filter(p -> p.getArtifactId() != null && (p.getArtifactId().equals("sample.mvn.app")
-                || p.getArtifactId().equals("sample.mvn.product") || p.getArtifactId().equals("sample.mvn.feature"))).forEach(p -> {
-                    p.getProjectReferences().clear();
-                    List<org.apache.maven.model.Dependency> newDependencies = new ArrayList<>();
-                    newDependencies.addAll(project.getDependencies());
-                    newDependencies.addAll(p.getDependencies());
-                    p.setDependencies(newDependencies);
-                });
+    private boolean onlyRelevantProjects(MavenProject p) {
+        return p.getArtifactId() != null && (p.getArtifactId().equals("sample.mvn.app") || p.getArtifactId().equals("sample.mvn.product")
+                || p.getArtifactId().equals("sample.mvn.feature"));
+    }
+
+    public void processProject(MavenProject p) {
+
+        // clear project references so that the generating project cannot be accessed anymore -> access the repository instead
+        p.getProjectReferences().clear();
+        
+        // add extracted dependencies to all projects that use the platform
+        List<org.apache.maven.model.Dependency> newDependencies = new ArrayList<>();
+        newDependencies.addAll(this.generatorProject.getDependencies());
+        newDependencies.addAll(p.getDependencies());
+        p.setDependencies(newDependencies);
     }
 
     public static void main(String[] args) {
