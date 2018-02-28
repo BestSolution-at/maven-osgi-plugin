@@ -57,22 +57,10 @@ public class TargetPlatformGenerator extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         LoggingSupport.setLogger(logger);
-        
-        File outputFileO = MainApplication.run(new DefaultParameterProvider(project.getVersion(), project.getArtifactId(), project.getGroupId(), outputFile,
-                additionalDependenciesFile, whitelistFile, featureFile, targetFeatureJarPrefix, efxclipseSite, efxclipseUpdateSite), this.project);
 
-        this.project.setPomFile(outputFileO);
-
-        List<MavenProject> allProjects = session.getAllProjects();
-
-        allProjects.stream().filter(p -> p.getArtifactId() != null && (p.getArtifactId().equals("sample.mvn.app")
-                || p.getArtifactId().equals("sample.mvn.product") || p.getArtifactId().equals("sample.mvn.feature"))).forEach(p -> {
-                    p.getProjectReferences().clear();
-                    List<org.apache.maven.model.Dependency> newDependencies = new ArrayList<>();
-                    newDependencies.addAll(this.project.getDependencies());
-                    newDependencies.addAll(p.getDependencies());
-                    p.setDependencies(newDependencies);
-                });
+        MainApplication mainApplication = new MainApplication(new DefaultParameterProvider(project.getVersion(), project.getArtifactId(), project.getGroupId(),
+                outputFile, additionalDependenciesFile, whitelistFile, featureFile, targetFeatureJarPrefix, efxclipseSite, efxclipseUpdateSite));
+        mainApplication.run(this.project, this.session);
 
     }
 
