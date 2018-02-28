@@ -54,7 +54,7 @@ public class TargetPlatformLoader extends DefaultModelReader {
 
     public Model read(Reader input, Map<String, ?> options) throws IOException, ModelParseException {
 
-        LoggingSupport.LOGGER = logger;
+        TargetPlatformDependenciesExtractor.setLogger(logger);
 
         Model model = super.read(input, options);
         String activatePlugin = model.getProperties().getProperty(ACTIVATE_MAVEN_OSGI_TARGETPLATFORM_EXTENSION, "false");

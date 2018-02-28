@@ -16,6 +16,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.logging.Logger;
 
+import de.zeiss.maven.osgi.targetplatform.lib.TargetPlatformDependenciesExtractor;
 import de.zeiss.maven.osgi.targetplatform.lib.internal.LoggingSupport;
 import de.zeiss.maven.osgi.targetplatform.plugin.internal.DefaultParameterProvider;
 import de.zeiss.maven.osgi.targetplatform.plugin.internal.MainApplication;
@@ -56,7 +57,7 @@ public class TargetPlatformGenerator extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        LoggingSupport.LOGGER = logger;
+        TargetPlatformDependenciesExtractor.setLogger(logger);
         
         File outputFileO = MainApplication.run(new DefaultParameterProvider(project.getVersion(), project.getArtifactId(), project.getGroupId(), outputFile,
                 additionalDependenciesFile, whitelistFile, featureFile, targetFeatureJarPrefix, efxclipseSite, efxclipseUpdateSite), this.project);

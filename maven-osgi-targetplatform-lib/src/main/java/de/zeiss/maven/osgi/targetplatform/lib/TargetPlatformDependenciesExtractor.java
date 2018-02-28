@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.maven.model.Dependency;
+import org.codehaus.plexus.logging.Logger;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 
 import de.zeiss.maven.osgi.targetplatform.lib.internal.AdditionalDependencyProvider;
@@ -12,6 +13,7 @@ import de.zeiss.maven.osgi.targetplatform.lib.internal.FeaturePluginExtractor;
 import de.zeiss.maven.osgi.targetplatform.lib.internal.FeaturePluginFilter;
 import de.zeiss.maven.osgi.targetplatform.lib.internal.FeaturePluginToMavenDependencyConverter;
 import de.zeiss.maven.osgi.targetplatform.lib.internal.JarAccessor;
+import de.zeiss.maven.osgi.targetplatform.lib.internal.LoggingSupport;
 import de.zeiss.maven.osgi.targetplatform.lib.internal.ParameterProvider;
 import de.zeiss.maven.osgi.targetplatform.lib.internal.UpdateSiteAccessor;
 
@@ -21,6 +23,12 @@ import de.zeiss.maven.osgi.targetplatform.lib.internal.UpdateSiteAccessor;
  *
  */
 public class TargetPlatformDependenciesExtractor {
+    
+    
+    public static void setLogger(Logger logger){
+        LoggingSupport.LOGGER = logger;
+    }
+    
 
     /**
      * Does the dependencies extraction.
