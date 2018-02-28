@@ -19,13 +19,14 @@ import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
  */
 class PomWriter {
 
+    private static final String MAVEN_MODEL_VERSION = "4.0.0";
     private static final String PACKAGING_TYPE = "pom";
 
     static void writePom(File file, String groupId, String artifactId, String version, Set<Dependency> dependencies) {
 
         Model model = new Model();
 
-        model.setModelVersion("4.0.0");
+        model.setModelVersion(MAVEN_MODEL_VERSION);
         model.setArtifactId(artifactId);
         model.setGroupId(groupId);
         model.setVersion(version);

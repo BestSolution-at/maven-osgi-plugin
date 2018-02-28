@@ -2,16 +2,16 @@ package de.zeiss.maven.osgi.targetplatform.plugin.internal;
 
 public class DefaultParameterProvider implements ExtendedParameterProvider {
 
-    private String version;
-    private String artifactId;
-    private String groupId;
-    private String outputFile;
-    private String additionalDependenciesFile;
-    private String whitelistFile;
-    private String featureFile;
-    private String targetFeatureJarPrefix;
-    private String efxclipseSite;
-    private String efxclipseGenericRepositoryUrl;
+    private final String version;
+    private final String artifactId;
+    private final String groupId;
+    private final String outputFile;
+    private final String additionalDependenciesFile;
+    private final String whitelistFile;
+    private final String featureFile;
+    private final String targetFeatureJarPrefix;
+    private final String efxclipseSite;
+    private final String efxclipseGenericRepositoryUrl;
 
     public DefaultParameterProvider(String version, String artifactId, String groupId, String outputFile, String additionalDependenciesFile,
             String whitelistFile, String featureFile, String targetFeatureJarPrefix, String efxclipseSite, String efxclipseGenericRepositoryUrl) {
@@ -29,55 +29,46 @@ public class DefaultParameterProvider implements ExtendedParameterProvider {
 
     @Override
     public String getVersion() {
-
         return version;
     }
 
     @Override
     public String getArtifactId() {
-
         return artifactId;
     }
 
     @Override
     public String getGroupId() {
-
         return groupId;
     }
 
     @Override
     public String getOutputFile() {
-
         return outputFile;
     }
 
     @Override
     public String getAdditionalDependenciesFile() {
-
         return additionalDependenciesFile;
     }
 
     @Override
     public String getWhitelistFile() {
-
         return whitelistFile;
     }
 
     @Override
     public String getFeatureFile() {
-
         return featureFile;
     }
 
     @Override
     public String getTargetFeatureJarPrefix() {
-
         return targetFeatureJarPrefix;
     }
 
     @Override
     public String getEfxclipseSite() {
-
         return efxclipseSite;
     }
 
