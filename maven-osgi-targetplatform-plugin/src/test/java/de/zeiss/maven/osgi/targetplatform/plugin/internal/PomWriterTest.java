@@ -2,7 +2,6 @@ package de.zeiss.maven.osgi.targetplatform.plugin.internal;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +15,10 @@ import org.apache.maven.model.Dependency;
 import org.junit.Test;
 
 public class PomWriterTest {
+
+    private static final String DELIMITER = "\\Z";
+    private static final String POM_CMP_XML = "/pom-cmp.xml";
+    private static final String XML_EXTENSION = ".xml";
 
     private final String POM_FILE_NAME = "pom-test";
 
@@ -36,8 +39,8 @@ public class PomWriterTest {
         PomWriter.writePom(pomFile, GROUP_ID, ARTIFACT_ID, VERSION, dependencies);
         Scanner scanner = new Scanner(pomFile);
         StringWriter writer = new StringWriter();
-        String generatedFileContent = scanner.useDelimiter("\\Z").next();
-        IOUtils.copy(getClass().getResourceAsStream("/pom-cmp.xml"), writer);
+        String generatedFileContent = scanner.useDelimiter(DELIMITER).next();
+        IOUtils.copy(getClass().getResourceAsStream(POM_CMP_XML), writer);
         String expectedFileContent = writer.toString();
         scanner.close();
         assertThat(generatedFileContent.replaceAll("\\s+", ""), equalTo(expectedFileContent.replaceAll("\\s+", "")));
@@ -56,7 +59,7 @@ public class PomWriterTest {
     }
 
     private File createDestinationFile() throws IOException {
-        return File.createTempFile(POM_FILE_NAME, ".xml");
+        return File.createTempFile(POM_FILE_NAME, XML_EXTENSION);
     }
 
 }
