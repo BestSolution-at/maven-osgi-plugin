@@ -19,7 +19,7 @@ import de.zeiss.maven.osgi.targetplatform.lib.TargetPlatformDependenciesExtracto
 public class MainApplication {
 
     private final ExtendedParameterProvider parameterProvider;
-    
+
     private Set<Dependency> dependencies;
     private File outputFile;
     private MavenProject generatorProject;
@@ -39,10 +39,10 @@ public class MainApplication {
         PomWriter.writePom(outputFile, parameterProvider.getGroupId(), parameterProvider.getArtifactId(), parameterProvider.getVersion(), dependencies);
     }
 
-    public void doPostProcessing(MavenProject generatorProject, MavenSession session) {
+    private void doPostProcessing(MavenProject generatorProject, MavenSession session) {
 
         // Update the generator project
-        this.generatorProject = generatorProject;        
+        this.generatorProject = generatorProject;
         this.generatorProject.setDependencies(new ArrayList<>(dependencies));
         this.generatorProject.setPomFile(outputFile);
 
@@ -55,11 +55,11 @@ public class MainApplication {
                 || p.getArtifactId().equals("sample.mvn.feature"));
     }
 
-    public void processProject(MavenProject p) {
+    private void processProject(MavenProject p) {
 
         // clear project references so that the generating project cannot be accessed anymore -> access the repository instead
         p.getProjectReferences().clear();
-        
+
         // add extracted dependencies to all projects that use the platform
         List<org.apache.maven.model.Dependency> newDependencies = new ArrayList<>();
         newDependencies.addAll(this.generatorProject.getDependencies());

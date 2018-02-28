@@ -22,7 +22,7 @@ class FeaturePluginExtractor {
      * @param featureInputStream
      * @return
      */
-    public static Set<IFeaturePlugin> extractFeaturePlugins(InputStream featureInputStream) {
+    static Set<IFeaturePlugin> extractFeaturePlugins(InputStream featureInputStream) {
 
         WorkspaceFeatureModel fmodel = new WorkspaceFeatureModel(new FileWrapper(featureInputStream));
 

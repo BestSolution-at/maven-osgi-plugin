@@ -18,7 +18,7 @@ class FeaturePluginFilter implements Predicate<IFeaturePlugin> {
 
     private final Set<String> whiteList;
 
-    public FeaturePluginFilter(InputStream resource) {
+    FeaturePluginFilter(InputStream resource) {
         this.whiteList = getWhiteList(resource);
     }
 
