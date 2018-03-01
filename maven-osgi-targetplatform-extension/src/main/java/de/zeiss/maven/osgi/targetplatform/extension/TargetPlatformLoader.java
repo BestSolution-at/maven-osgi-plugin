@@ -17,7 +17,6 @@ import org.apache.maven.model.io.ModelReader;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.util.IOUtil;
 
 import de.zeiss.maven.osgi.targetplatform.extension.internal.PropertyBasedParameterProvider;
 import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
