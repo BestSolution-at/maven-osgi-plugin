@@ -30,7 +30,7 @@ import de.zeiss.maven.osgi.targetplatform.lib.TargetPlatformDependenciesExtracto
 @Component(role = ModelReader.class, hint = "default")
 public class TargetPlatformLoader extends DefaultModelReader {
 
-    private static final String REPOSITORY_URL_PROPERTY_KEY = "efxclipse.generic.repository.url";
+    private static final String REPOSITORY_URL_PROPERTY_KEY = "efxclipse.update.site";
 
     @Requirement
     Logger logger;

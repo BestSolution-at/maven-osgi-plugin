@@ -19,7 +19,7 @@ public class PropertyBasedParameterProvider implements ParameterProvider {
         this.featureFile = properties.getProperty("feature.file", "feature.xml");
         this.targetFeatureJarPrefix = properties.getProperty("target.feature.jar.prefix", "features/org.eclipse.fx.target.feature_");
         this.efxclipseSite = properties.getProperty("efxclipse.site", "site.xml");
-        this.efxclipseGenericRepositoryUrl = properties.getProperty("efxclipse.generic.repository.url");
+        this.efxclipseGenericRepositoryUrl = properties.getProperty("efxclipse.update.site");
     }
 
     @Override
