@@ -18,6 +18,6 @@ public interface ParameterProvider {
 
     String getEfxclipseSite();
 
-    String getEfxclipseGenericRepositoryUrl();
+    String getEfxclipseUpdateSite();
 
 }

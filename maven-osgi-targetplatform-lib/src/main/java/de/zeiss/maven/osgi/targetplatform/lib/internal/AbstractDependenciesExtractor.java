@@ -21,7 +21,7 @@ public abstract class AbstractDependenciesExtractor {
      * @return the maven dependencies
      */
     public Set<Dependency> doMavenDependenciesGeneration() {
-        String parentUrl = getParameterProvider().getEfxclipseGenericRepositoryUrl();
+        String parentUrl = getParameterProvider().getEfxclipseUpdateSite();
 
         String relativeUrlToJarFile = UpdateSiteAccessor.readRelativeTargetPlatformFeatureJarUrl(parentUrl + "/" + getParameterProvider().getEfxclipseSite(),
                 getParameterProvider().getTargetFeatureJarPrefix());

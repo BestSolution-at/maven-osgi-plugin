@@ -30,8 +30,6 @@ import de.zeiss.maven.osgi.targetplatform.lib.TargetPlatformDependenciesExtracto
 @Component(role = ModelReader.class, hint = "default")
 public class TargetPlatformLoader extends DefaultModelReader {
 
-    private static final String REPOSITORY_URL_PROPERTY_KEY = "efxclipse.update.site";
-
     @Requirement
     Logger logger;
 
@@ -57,9 +55,9 @@ public class TargetPlatformLoader extends DefaultModelReader {
         LoggingSupport.setLogger(logger);
 
         Model model = super.read(input, options);
-        String repositoryUrl = model.getProperties().getProperty(REPOSITORY_URL_PROPERTY_KEY, "false");
+        String repositoryUrl = model.getProperties().getProperty(PropertyBasedParameterProvider.EFXCLIPSE_UPDATE_SITE_PROPERTY_KEY, "false");
         if (!"false".equals(repositoryUrl)) {
-            
+
             TargetPlatformDependenciesExtractor targetPlatformDependenciesExtractor = new TargetPlatformDependenciesExtractor(
                     new PropertyBasedParameterProvider(model.getProperties()));
 

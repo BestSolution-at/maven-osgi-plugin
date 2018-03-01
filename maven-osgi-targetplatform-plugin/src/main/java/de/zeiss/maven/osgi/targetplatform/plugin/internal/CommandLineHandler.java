@@ -14,7 +14,7 @@ import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
  */
 class CommandLineHandler implements ExtendedParameterProvider {
 
-    private static final String EFXCLIPSE_GENERIC_REPOSITORY_URL = "efxclipseGenericRepositoryUrl";
+    private static final String EFXCLIPSE_UPDATE_SITE = "efxclipseUpdateSite";
     private static final String EFXCLIPSE_SITE = "efxclipseSite";
     private static final String TARGET_FEATURE_JAR_PREFIX = "targetFeatureJarPrefix";
     private static final String FEATURE_FILE_ARGUMENT = "feature_file";
@@ -49,8 +49,8 @@ class CommandLineHandler implements ExtendedParameterProvider {
     }
 
     @Override
-    public String getEfxclipseGenericRepositoryUrl() {
-        return line.getOptionValue(EFXCLIPSE_GENERIC_REPOSITORY_URL);
+    public String getEfxclipseUpdateSite() {
+        return line.getOptionValue(EFXCLIPSE_UPDATE_SITE);
     }
 
     @Override
@@ -100,7 +100,7 @@ class CommandLineHandler implements ExtendedParameterProvider {
 
     private Options createCommandLineOptionsDefintion() {
         Options opt = new Options();
-        opt.addRequiredOption(EFXCLIPSE_GENERIC_REPOSITORY_URL, null, true, "url of efxclipse generic repository");
+        opt.addRequiredOption(EFXCLIPSE_UPDATE_SITE, null, true, "url of efxclipse update site");
         opt.addOption(EFXCLIPSE_SITE, null, true, "file name of site");
         opt.addRequiredOption(TARGET_FEATURE_JAR_PREFIX, null, true, "prefix of target feature jar");
         opt.addOption(FEATURE_FILE_ARGUMENT, null, true, "path to feature file");

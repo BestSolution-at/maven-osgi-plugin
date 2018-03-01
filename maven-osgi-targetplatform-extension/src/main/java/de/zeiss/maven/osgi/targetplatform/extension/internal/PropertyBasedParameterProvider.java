@@ -6,20 +6,27 @@ import de.zeiss.maven.osgi.targetplatform.lib.ParameterProvider;
 
 public class PropertyBasedParameterProvider implements ParameterProvider {
 
+    private static final String ADDITIONAL_DEPENDENCIES_FILE_PROPERTY_KEY = "additional.dependencies.file";
+    private static final String WHITELIST_FILE_PROPERTY_KEY = "whitelist.file";
+    private static final String FEATURE_FILE_PROPERTY_KEY = "feature.file";
+    private static final String TARGET_FEATURE_JAR_PREFIX_PROPERTY_KEY = "target.feature.jar.prefix";
+    private static final String EFXCLIPSE_SITE_PROPERTY_KEY = "efxclipse.site";
+    public static final String EFXCLIPSE_UPDATE_SITE_PROPERTY_KEY = "efxclipse.update.site";
+    
     private final String additionalDependenciesFile;
     private final String whitelistFile;
     private final String featureFile;
     private final String targetFeatureJarPrefix;
     private final String efxclipseSite;
-    private final String efxclipseGenericRepositoryUrl;
+    private final String efxclipseUpdateSite;
 
     public PropertyBasedParameterProvider(Properties properties) {
-        this.additionalDependenciesFile = properties.getProperty("additional.dependencies.file", "/additional-dependencies.txt");
-        this.whitelistFile = properties.getProperty("whitelist.file", "/whitelist.txt");
-        this.featureFile = properties.getProperty("feature.file", "feature.xml");
-        this.targetFeatureJarPrefix = properties.getProperty("target.feature.jar.prefix", "features/org.eclipse.fx.target.feature_");
-        this.efxclipseSite = properties.getProperty("efxclipse.site", "site.xml");
-        this.efxclipseGenericRepositoryUrl = properties.getProperty("efxclipse.update.site");
+        this.additionalDependenciesFile = properties.getProperty(ADDITIONAL_DEPENDENCIES_FILE_PROPERTY_KEY, "/additional-dependencies.txt");
+        this.whitelistFile = properties.getProperty(WHITELIST_FILE_PROPERTY_KEY, "/whitelist.txt");
+        this.featureFile = properties.getProperty(FEATURE_FILE_PROPERTY_KEY, "feature.xml");
+        this.targetFeatureJarPrefix = properties.getProperty(TARGET_FEATURE_JAR_PREFIX_PROPERTY_KEY, "features/org.eclipse.fx.target.feature_");
+        this.efxclipseSite = properties.getProperty(EFXCLIPSE_SITE_PROPERTY_KEY, "site.xml");
+        this.efxclipseUpdateSite = properties.getProperty(EFXCLIPSE_UPDATE_SITE_PROPERTY_KEY);
     }
 
     @Override
@@ -53,8 +60,8 @@ public class PropertyBasedParameterProvider implements ParameterProvider {
     }
 
     @Override
-    public String getEfxclipseGenericRepositoryUrl() {
-        return efxclipseGenericRepositoryUrl;
+    public String getEfxclipseUpdateSite() {
+        return efxclipseUpdateSite;
     }
 
 }

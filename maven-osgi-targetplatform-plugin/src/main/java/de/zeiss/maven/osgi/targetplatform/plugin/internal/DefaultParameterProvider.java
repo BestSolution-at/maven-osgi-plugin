@@ -11,10 +11,10 @@ public class DefaultParameterProvider implements ExtendedParameterProvider {
     private final String featureFile;
     private final String targetFeatureJarPrefix;
     private final String efxclipseSite;
-    private final String efxclipseGenericRepositoryUrl;
+    private final String efxclipseUpdateSite;
 
     public DefaultParameterProvider(String version, String artifactId, String groupId, String outputFile, String additionalDependenciesFile,
-            String whitelistFile, String featureFile, String targetFeatureJarPrefix, String efxclipseSite, String efxclipseGenericRepositoryUrl) {
+            String whitelistFile, String featureFile, String targetFeatureJarPrefix, String efxclipseSite, String efxclipseUpdateSite) {
         this.version = version;
         this.artifactId = artifactId;
         this.groupId = groupId;
@@ -24,7 +24,7 @@ public class DefaultParameterProvider implements ExtendedParameterProvider {
         this.featureFile = featureFile;
         this.targetFeatureJarPrefix = targetFeatureJarPrefix;
         this.efxclipseSite = efxclipseSite;
-        this.efxclipseGenericRepositoryUrl = efxclipseGenericRepositoryUrl;
+        this.efxclipseUpdateSite = efxclipseUpdateSite;
     }
 
     @Override
@@ -73,8 +73,8 @@ public class DefaultParameterProvider implements ExtendedParameterProvider {
     }
 
     @Override
-    public String getEfxclipseGenericRepositoryUrl() {
-        return efxclipseGenericRepositoryUrl;
+    public String getEfxclipseUpdateSite() {
+        return efxclipseUpdateSite;
     }
 
 }
