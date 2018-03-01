@@ -11,7 +11,7 @@ public class PropertyBasedParameterProvider implements ParameterProvider {
     private static final String FEATURE_FILE_PROPERTY_KEY = "feature.file";
     private static final String TARGET_FEATURE_JAR_PREFIX_PROPERTY_KEY = "target.feature.jar.prefix";
     private static final String EFXCLIPSE_SITE_PROPERTY_KEY = "efxclipse.site";
-    public static final String EFXCLIPSE_UPDATE_SITE_PROPERTY_KEY = "efxclipse.update.site";
+    private static final String EFXCLIPSE_UPDATE_SITE_PROPERTY_KEY = "efxclipse.update.site";
 
     private final String additionalDependenciesFile;
     private final String whitelistFile;
