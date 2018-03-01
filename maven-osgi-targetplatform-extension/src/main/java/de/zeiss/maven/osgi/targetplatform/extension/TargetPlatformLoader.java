@@ -36,18 +36,20 @@ public class TargetPlatformLoader extends DefaultModelReader {
     public Model read(final File input, final Map<String, ?> options) throws IOException {
         Model model = null;
 
-        Reader reader = new BufferedReader(new FileReader(input));
-        try {
+        try (Reader reader = new BufferedReader(new FileReader(input))) {
             model = read(reader, options);
             model.setPomFile(input);
-        } finally {
-            IOUtil.close(reader);
         }
+
         return model;
     }
 
     public Model read(final InputStream input, final Map<String, ?> options) throws IOException {
-        return read(new InputStreamReader(input), options);
+        Model model = null;
+        try (InputStreamReader reader = new InputStreamReader(input)) {
+            model = read(reader, options);
+        }
+        return model;
     }
 
     public Model read(Reader input, Map<String, ?> options) throws IOException, ModelParseException {
