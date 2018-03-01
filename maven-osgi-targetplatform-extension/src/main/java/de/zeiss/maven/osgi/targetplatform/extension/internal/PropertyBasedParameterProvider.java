@@ -12,7 +12,7 @@ public class PropertyBasedParameterProvider implements ParameterProvider {
     private static final String TARGET_FEATURE_JAR_PREFIX_PROPERTY_KEY = "target.feature.jar.prefix";
     private static final String EFXCLIPSE_SITE_PROPERTY_KEY = "efxclipse.site";
     public static final String EFXCLIPSE_UPDATE_SITE_PROPERTY_KEY = "efxclipse.update.site";
-    
+
     private final String additionalDependenciesFile;
     private final String whitelistFile;
     private final String featureFile;
@@ -27,6 +27,10 @@ public class PropertyBasedParameterProvider implements ParameterProvider {
         this.targetFeatureJarPrefix = properties.getProperty(TARGET_FEATURE_JAR_PREFIX_PROPERTY_KEY, "features/org.eclipse.fx.target.feature_");
         this.efxclipseSite = properties.getProperty(EFXCLIPSE_SITE_PROPERTY_KEY, "site.xml");
         this.efxclipseUpdateSite = properties.getProperty(EFXCLIPSE_UPDATE_SITE_PROPERTY_KEY);
+    }
+
+    public boolean activatePlugin() {
+        return efxclipseUpdateSite != null;
     }
 
     @Override

@@ -53,20 +53,21 @@ public class TargetPlatformLoader extends DefaultModelReader {
     }
 
     public Model read(Reader input, Map<String, ?> options) throws IOException, ModelParseException {
-
-        LoggingSupport.setLogger(logger);
-
         Model model = super.read(input, options);
-        String repositoryUrl = model.getProperties().getProperty(PropertyBasedParameterProvider.EFXCLIPSE_UPDATE_SITE_PROPERTY_KEY, "false");
-        if (!"false".equals(repositoryUrl)) {
-
-            TargetPlatformDependenciesExtractor targetPlatformDependenciesExtractor = new TargetPlatformDependenciesExtractor(
-                    new PropertyBasedParameterProvider(model.getProperties()));
-
-            for (Dependency dependency : targetPlatformDependenciesExtractor.doMavenDependenciesGeneration()) {
-                model.addDependency(dependency);
-            }
+        PropertyBasedParameterProvider parameterProvider = new PropertyBasedParameterProvider(model.getProperties());
+        if (parameterProvider.activatePlugin()) {
+            providePlatformDependencies(model, parameterProvider);
         }
         return model;
+    }
+
+    public void providePlatformDependencies(Model model, PropertyBasedParameterProvider parameterProvider) {
+        LoggingSupport.setLogger(logger);
+
+        TargetPlatformDependenciesExtractor targetPlatformDependenciesExtractor = new TargetPlatformDependenciesExtractor(parameterProvider);
+
+        for (Dependency dependency : targetPlatformDependenciesExtractor.doMavenDependenciesGeneration()) {
+            model.addDependency(dependency);
+        }
     }
 }
