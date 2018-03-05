@@ -13,12 +13,12 @@ public class PropertyBasedParameterProvider implements ParameterProvider {
     private static final String EFXCLIPSE_SITE_PROPERTY_KEY = "efxclipse.site";
     private static final String EFXCLIPSE_UPDATE_SITE_PROPERTY_KEY = "efxclipse.update.site";
 
-    private final String additionalDependenciesFile;
-    private final String whitelistFile;
-    private final String featureFile;
-    private final String targetFeatureJarPrefix;
-    private final String efxclipseSite;
-    private final String efxclipseUpdateSite;
+    private  String additionalDependenciesFile;
+    private  String whitelistFile;
+    private  String featureFile;
+    private  String targetFeatureJarPrefix;
+    private  String efxclipseSite;
+    private  String efxclipseUpdateSite;
 
     public PropertyBasedParameterProvider(Properties properties) {
         this.additionalDependenciesFile = properties.getProperty(ADDITIONAL_DEPENDENCIES_FILE_PROPERTY_KEY, "/additional-dependencies.txt");
@@ -27,6 +27,26 @@ public class PropertyBasedParameterProvider implements ParameterProvider {
         this.targetFeatureJarPrefix = properties.getProperty(TARGET_FEATURE_JAR_PREFIX_PROPERTY_KEY, "features/org.eclipse.fx.target.feature_");
         this.efxclipseSite = properties.getProperty(EFXCLIPSE_SITE_PROPERTY_KEY, "site.xml");
         this.efxclipseUpdateSite = properties.getProperty(EFXCLIPSE_UPDATE_SITE_PROPERTY_KEY);
+
+        overrideModelPropertiesWithSystemProperties();
+    }
+
+    private void overrideModelPropertiesWithSystemProperties() {
+        this.additionalDependenciesFile = getSystemProperty(ADDITIONAL_DEPENDENCIES_FILE_PROPERTY_KEY, additionalDependenciesFile);
+        this.whitelistFile = getSystemProperty(WHITELIST_FILE_PROPERTY_KEY, whitelistFile);
+        this.featureFile = getSystemProperty(FEATURE_FILE_PROPERTY_KEY, featureFile);
+        this.targetFeatureJarPrefix = getSystemProperty(TARGET_FEATURE_JAR_PREFIX_PROPERTY_KEY, targetFeatureJarPrefix);
+        this.efxclipseSite = getSystemProperty(EFXCLIPSE_SITE_PROPERTY_KEY, efxclipseSite);
+        this.efxclipseUpdateSite = getSystemProperty(EFXCLIPSE_UPDATE_SITE_PROPERTY_KEY, efxclipseUpdateSite);
+    }
+
+    private String getSystemProperty(String systemPropertyKey, String defaultValue) {
+        if (System.getProperty(systemPropertyKey) != null) {
+            return System.getProperty(systemPropertyKey);
+
+        } else {
+            return defaultValue;
+        }
     }
 
     public boolean activatePlugin() {
