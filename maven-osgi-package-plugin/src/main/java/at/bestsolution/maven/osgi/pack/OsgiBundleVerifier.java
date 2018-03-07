@@ -34,6 +34,7 @@ final public class OsgiBundleVerifier {
             }
 
         } catch (IOException e) {
+        	if (logger!=null)
             logger.error("Can not process artifact " + formatArtifact(artifact) + ". Jar File of " + artifact.getFile() + " can not be created");
         }
 
