@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.zeiss.maven.extension</groupId>
+	<groupId>com.zeiss.maven</groupId>
 	<artifactId>e4-maven</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -18,6 +18,9 @@
 		<module>maven-osgi-exec-plugin</module>
 		<module>maven-osgi-package-plugin</module>
 		<module>tycho-lifecycle-controller</module>
+		<module>maven-osgi-targetplatform-lib</module>
+		<module>maven-osgi-targetplatform-extension</module>
+		<module>maven-osgi-targetplatform-plugin</module>
 	</modules>
 
 

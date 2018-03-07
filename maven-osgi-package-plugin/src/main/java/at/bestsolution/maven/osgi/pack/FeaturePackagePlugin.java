@@ -71,7 +71,7 @@ public class FeaturePackagePlugin extends AbstractMojo {
     @Component
     private Logger logger;
 
-    private OsgiBundleVerifier osgiVerifier = new OsgiBundleVerifier(logger);
+    private OsgiBundleVerifier osgiVerifier;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -110,7 +110,7 @@ public class FeaturePackagePlugin extends AbstractMojo {
 				throw new IllegalStateException("Could not find artifact for '" + formatDependency(a) + "'");
 			}
 
-            if (!osgiVerifier.isBundle(first.get())) {
+            if (!getOsgiVerifier().isBundle(first.get())) {
                 nonOsgiArtifacts.add(first.get());
                 continue;
             }
@@ -202,5 +202,12 @@ public class FeaturePackagePlugin extends AbstractMojo {
 
 	private static boolean dirShape(Manifest m) {
 		return "dir".equals(m.getMainAttributes().getValue("Eclipse-BundleShape"));
+	}
+	
+	private OsgiBundleVerifier getOsgiVerifier() {
+		if (osgiVerifier == null) {
+			osgiVerifier = new OsgiBundleVerifier(logger);
+		}
+		return osgiVerifier;
 	}
 }

@@ -37,108 +37,116 @@ import static at.bestsolution.maven.osgi.pack.OsgiBundleVerifier.formatArtifact;
 @Mojo(name = "package-p2-repo", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class P2RepositoryPackagePlugin extends AbstractMojo {
 
-	@Parameter(defaultValue = "${project}", required = true, readonly = true)
-	private MavenProject project;
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
+    private MavenProject project;
 
-	@Parameter(required = true, defaultValue = "${project.build.directory}/source")
-	private File directory;
+    @Parameter(required = true, defaultValue = "${project.build.directory}/source")
+    private File directory;
 
-	@Parameter(defaultValue = "${project.build.directory}/source-repository")
-	private File repositoryLocation;
+    @Parameter(defaultValue = "${project.build.directory}/source-repository")
+    private File repositoryLocation;
 
-	@Parameter(defaultValue = "true")
-	private boolean publishArtifacts;
+    @Parameter(defaultValue = "true")
+    private boolean publishArtifacts;
 
-	@Parameter(defaultValue = "true")
-	private boolean compress;
+    @Parameter(defaultValue = "true")
+    private boolean compress;
 
-	@Component
-	private P2ApplicationLauncher launcher;
+    @Component
+    private P2ApplicationLauncher launcher;
 
-	@Component
-	private Logger logger;
+    @Component
+    private Logger logger;
 
     private OsgiBundleVerifier osgiVerifier;
 
-	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		for( Artifact a : project.getArtifacts() ) {
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+
+        project.getArtifacts().stream().filter(this::pomFilter).forEach(a -> {
+
             String coloredOsgiFlag = getOsgiVerifier().isBundle(a) ? "true" : DebugSupport.TerminalOutputStyling.RED.style("false");
             String message = String.format("Processing artifact: %0$-70s - OSGI Bundle: %s", formatArtifact(a), coloredOsgiFlag);
-		    logger.debug(message);
+            logger.debug(message);
 
-		    if (a.getType().equals("jar")) {
-				try (JarFile f = new JarFile(a.getFile())) {
-					handleJar(a, f);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					throw new IllegalStateException(e);
-				}
-			}
-		}
+            try (JarFile f = new JarFile(a.getFile())) {
+                handleJar(a, f);
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        });
 
-		try {
-			publishContent();
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			throw new IllegalStateException(e);
-		}
-	}
+        try {
+            publishContent();
+        } catch (MalformedURLException e) {
+            // TODO Auto-generated catch block
+            throw new IllegalStateException(e);
+        }
+    }
 
-	private void publishContent() throws MojoFailureException, MalformedURLException {
-		launcher.setWorkingDirectory(project.getBasedir());
-		launcher.setApplicationName("org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher");
-		launcher.addArguments("-artifactRepository", repositoryLocation.toURI().toURL().toString());
-		launcher.addArguments("-metadataRepository", repositoryLocation.toURI().toURL().toString());
-		launcher.addArguments("-source", directory.toString());
+    private boolean pomFilter(Artifact artifact) {
+        if (!"pom".equalsIgnoreCase(artifact.getType())) {
+            return true;
+        } else {
+            logger.debug(String.format("Artifact %s is not a jar file and will not be processed as an osgi bundle.", formatArtifact(artifact)));
+            return false;
+        }
+    }
 
-		if (publishArtifacts) {
-			launcher.addArguments("-publishArtifacts");
-		}
+    private void publishContent() throws MojoFailureException, MalformedURLException {
+        launcher.setWorkingDirectory(project.getBasedir());
+        launcher.setApplicationName("org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher");
+        launcher.addArguments("-artifactRepository", repositoryLocation.toURI().toURL().toString());
+        launcher.addArguments("-metadataRepository", repositoryLocation.toURI().toURL().toString());
+        launcher.addArguments("-source", directory.toString());
 
-		// launcher.addArguments(getAppendFlag());
-		if (compress) {
-			launcher.addArguments("-compress");
-		}
+        if (publishArtifacts) {
+            launcher.addArguments("-publishArtifacts");
+        }
 
-		// launcher.addArguments(getReusePack200FilesFlag());
-		// launcher.addArguments(getAdditionalArgs());
+        // launcher.addArguments(getAppendFlag());
+        if (compress) {
+            launcher.addArguments("-compress");
+        }
 
-		int result = launcher.execute(0);
-		if (result != 0) {
-			throw new MojoFailureException("P2 publisher return code was " + result);
-		}
-	}
+        // launcher.addArguments(getReusePack200FilesFlag());
+        // launcher.addArguments(getAdditionalArgs());
 
-	private void handleJar(Artifact a, JarFile jf) throws IOException {
-		if (jf.getManifest() == null) {
-			throw new NoSuchFileException("The JAR file " + jf.getName() + " of artifact " + formatArtifact(a)
-					+ " has NO Manfifest file and is not an OSGI " + "bundle.");
-		}
+        int result = launcher.execute(0);
+        if (result != 0) {
+            throw new MojoFailureException("P2 publisher return code was " + result);
+        }
+    }
 
-		ZipEntry entry = jf.getEntry("feature.xml");
-		File dir;
-		if (entry == null) {
-			if (!getOsgiVerifier().isBundle(a)) {
-				return;
-			}
+    private void handleJar(Artifact a, JarFile jf) throws IOException {
+        if (jf.getManifest() == null) {
+            throw new NoSuchFileException(
+                    "The JAR file " + jf.getName() + " of artifact " + formatArtifact(a) + " has NO Manfifest file and is not an OSGI " + "bundle.");
+        }
 
-			dir = new File(directory,"plugins");
-		} else {
-			dir = new File(directory,"features");
-		}
+        ZipEntry entry = jf.getEntry("feature.xml");
+        File dir;
+        if (entry == null) {
+            if (!getOsgiVerifier().isBundle(a)) {
+                return;
+            }
 
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
-		Files.copy(a.getFile().toPath(), dir.toPath().resolve(a.getFile().getName()),StandardCopyOption.REPLACE_EXISTING);
-	}
+            dir = new File(directory, "plugins");
+        } else {
+            dir = new File(directory, "features");
+        }
 
-	private OsgiBundleVerifier getOsgiVerifier() {
-		if (osgiVerifier==null){
-			 osgiVerifier = new OsgiBundleVerifier(logger);
-		}
-		return osgiVerifier;
-	}
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        Files.copy(a.getFile().toPath(), dir.toPath().resolve(a.getFile().getName()), StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    private OsgiBundleVerifier getOsgiVerifier() {
+        if (osgiVerifier == null) {
+            osgiVerifier = new OsgiBundleVerifier(logger);
+        }
+        return osgiVerifier;
+    }
 
 }

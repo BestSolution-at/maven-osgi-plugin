@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="no.id"
+      label="no label"
+      version="1.0.0"
+      provider-name="no provider">
+
+   <plugin
+         id="my.plugin.id"
+         download-size="100"
+         install-size="200"
+         version="1.0.0.11111"
+         unpack="false"/>
+                  
+</feature>
