@@ -34,30 +34,29 @@ import org.eclipse.sisu.equinox.launching.internal.P2ApplicationLauncher;
 
 import static at.bestsolution.maven.osgi.pack.OsgiBundleVerifier.formatArtifact;
 
-@Mojo(name="package-p2-repo", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE)
+@Mojo(name = "package-p2-repo", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class P2RepositoryPackagePlugin extends AbstractMojo {
 
-
-    @Parameter(defaultValue = "${project}", required = true, readonly = true)
+	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	private MavenProject project;
-	
-	@Parameter(required=true, defaultValue = "${project.build.directory}/source")
+
+	@Parameter(required = true, defaultValue = "${project.build.directory}/source")
 	private File directory;
-	
+
 	@Parameter(defaultValue = "${project.build.directory}/source-repository")
-    private File repositoryLocation;
-	
+	private File repositoryLocation;
+
 	@Parameter(defaultValue = "true")
-    private boolean publishArtifacts;
-	
+	private boolean publishArtifacts;
+
 	@Parameter(defaultValue = "true")
-    private boolean compress;
-	
-	@Component
-    private P2ApplicationLauncher launcher;
+	private boolean compress;
 
 	@Component
-    private Logger logger;
+	private P2ApplicationLauncher launcher;
+
+	@Component
+	private Logger logger;
 
     private OsgiBundleVerifier osgiVerifier;
 
@@ -77,7 +76,7 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 				}
 			}
 		}
-		
+
 		try {
 			publishContent();
 		} catch (MalformedURLException e) {
@@ -87,59 +86,59 @@ public class P2RepositoryPackagePlugin extends AbstractMojo {
 	}
 
 	private void publishContent() throws MojoFailureException, MalformedURLException {
-        launcher.setWorkingDirectory(project.getBasedir());
-        launcher.setApplicationName("org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher");
-        launcher.addArguments("-artifactRepository", repositoryLocation.toURI().toURL().toString());
-        	launcher.addArguments("-metadataRepository", repositoryLocation.toURI().toURL().toString());
-        launcher.addArguments("-source",directory.toString());
-        
-        if( publishArtifacts ) {
-        		launcher.addArguments("-publishArtifacts");	
-        }
-        
-//        launcher.addArguments(getAppendFlag());
-        if( compress ) {
-        		launcher.addArguments("-compress");	
-        }
-        
-//        launcher.addArguments(getReusePack200FilesFlag());
-//        launcher.addArguments(getAdditionalArgs());
+		launcher.setWorkingDirectory(project.getBasedir());
+		launcher.setApplicationName("org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher");
+		launcher.addArguments("-artifactRepository", repositoryLocation.toURI().toURL().toString());
+		launcher.addArguments("-metadataRepository", repositoryLocation.toURI().toURL().toString());
+		launcher.addArguments("-source", directory.toString());
 
-        int result = launcher.execute(0);
-        if (result != 0
-				) {
-            throw new MojoFailureException("P2 publisher return code was " + result);
-        }
+		if (publishArtifacts) {
+			launcher.addArguments("-publishArtifacts");
+		}
+
+		// launcher.addArguments(getAppendFlag());
+		if (compress) {
+			launcher.addArguments("-compress");
+		}
+
+		// launcher.addArguments(getReusePack200FilesFlag());
+		// launcher.addArguments(getAdditionalArgs());
+
+		int result = launcher.execute(0);
+		if (result != 0) {
+			throw new MojoFailureException("P2 publisher return code was " + result);
+		}
 	}
-	
+
 	private void handleJar(Artifact a, JarFile jf) throws IOException {
-        if (jf.getManifest() == null) {
-            throw new NoSuchFileException("The JAR file " + jf.getName() + " of artifact " + formatArtifact(a) + " has NO Manfifest file and is not an OSGI " +
-                                          "bundle.");
-        }
+		if (jf.getManifest() == null) {
+			throw new NoSuchFileException("The JAR file " + jf.getName() + " of artifact " + formatArtifact(a)
+					+ " has NO Manfifest file and is not an OSGI " + "bundle.");
+		}
 
 		ZipEntry entry = jf.getEntry("feature.xml");
 		File dir;
-		if( entry == null ) {
-            if (!getOsgiVerifier().isBundle(a)) {
-                return;
-            }
+		if (entry == null) {
+			if (!getOsgiVerifier().isBundle(a)) {
+				return;
+			}
 
 			dir = new File(directory,"plugins");
 		} else {
 			dir = new File(directory,"features");
 		}
-		
-		if( ! dir.exists() ) {
+
+		if (!dir.exists()) {
 			dir.mkdirs();
 		}
 		Files.copy(a.getFile().toPath(), dir.toPath().resolve(a.getFile().getName()),StandardCopyOption.REPLACE_EXISTING);
 	}
 
-	public OsgiBundleVerifier getOsgiVerifier() {
-		if (osgiVerifier == null) {
+	private OsgiBundleVerifier getOsgiVerifier() {
+		if (osgiVerifier==null){
 			 osgiVerifier = new OsgiBundleVerifier(logger);
 		}
 		return osgiVerifier;
 	}
+
 }
