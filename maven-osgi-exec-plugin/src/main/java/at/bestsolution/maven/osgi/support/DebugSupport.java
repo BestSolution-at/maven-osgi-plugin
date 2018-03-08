@@ -43,10 +43,10 @@ final class DebugSupport {
          */
         private final static String END_SEQUENCE = "\u001B[0m";
 
-        private TerminalOutputStyling(String escSequenz) {
-            this.escSequenz = escSequenz;
+        private TerminalOutputStyling(String escSequence) {
+            this.escSequence = escSequence;
         }
-        private String escSequenz;
+        private String escSequence;
 
         /**
          * Surrounds the given {@code content} with the this color.
@@ -54,7 +54,7 @@ final class DebugSupport {
          * @return
          */
         public String style(String content) {
-            return escSequenz + content + END_SEQUENCE;
+            return escSequence + content + END_SEQUENCE;
         }
 
     }
