@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Tom Schindl<tom.schindl@bestsolution.at> - initial API and implementation
+ *     Tom Schindl - initial API and implementation
  *******************************************************************************/
 package at.bestsolution.maven.osgi.pack;
 
@@ -15,6 +15,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.jar.JarFile;
@@ -25,11 +27,13 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -37,6 +41,9 @@ import org.codehaus.plexus.util.xml.Xpp3DomWriter;
 
 import aQute.bnd.version.MavenVersion;
 import aQute.bnd.version.Version;
+
+import static at.bestsolution.maven.osgi.pack.OsgiBundleVerifier.formatArtifact;
+import static at.bestsolution.maven.osgi.pack.OsgiBundleVerifier.formatDependency;
 
 @Mojo(name="package-feature", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class FeaturePackagePlugin extends AbstractMojo {
@@ -60,6 +67,11 @@ public class FeaturePackagePlugin extends AbstractMojo {
 	
 	@Parameter
 	private String license;
+
+    @Component
+    private Logger logger;
+
+    private OsgiBundleVerifier osgiVerifier;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -89,12 +101,20 @@ public class FeaturePackagePlugin extends AbstractMojo {
 			d.addChild(n);
 		}
 
+        List<Artifact> nonOsgiArtifacts = new ArrayList<>();
+
 		for( Dependency a : project.getDependencies() ) {
 			Xpp3Dom p = new Xpp3Dom("plugin");
 			Optional<Artifact> first = project.getArtifacts().stream().filter(filter(a)).findFirst();
 			if( ! first.isPresent() ) {
-				throw new IllegalStateException("Could not find artifact for '" + a.getGroupId() + ":" +a.getArtifactId()+":"+removeQualifier(a.getVersion())+"'");
+				throw new IllegalStateException("Could not find artifact for '" + formatDependency(a) + "'");
 			}
+
+            if (!getOsgiVerifier().isBundle(first.get())) {
+                nonOsgiArtifacts.add(first.get());
+                continue;
+            }
+
 			Manifest mm = getManifest(first.get());
 			p.setAttribute("id", bundleName(mm));
 //			p.setAttribute("download-size", "1"); // FIXME
@@ -104,7 +124,13 @@ public class FeaturePackagePlugin extends AbstractMojo {
 			
 			d.addChild(p);
 		}
-		
+
+        if (!nonOsgiArtifacts.isEmpty()) {
+            printNonOsgiBundles(nonOsgiArtifacts);
+            throw new IllegalStateException("There are dependencies which are no OSGI bundles. They can not be used in the product. Convert them to valid " +
+                                            "OSGI bundles. See the list of artifacts above.");
+        }
+
 		if( ! classesDir.exists() ) {
 			classesDir.mkdirs();
 		}
@@ -126,8 +152,20 @@ public class FeaturePackagePlugin extends AbstractMojo {
 			throw new MojoExecutionException("Unable to write META-INF/MANIFEST.MF in '"+classesDir.getAbsolutePath()+"'",e);
 		}
 	}
-	
-	private Predicate<Artifact> filter(Dependency d) {
+
+	private void printNonOsgiBundles(List<Artifact> nonOsgiArtifacts) {
+        if (nonOsgiArtifacts.isEmpty()) {
+            return;
+        }
+
+        logger.error("List of artifacts which are no valid OSGI bundles: ");
+	    nonOsgiArtifacts.forEach(a -> {
+            String message = "\t" + DebugSupport.TerminalOutputStyling.HIGH_INTENSITY.style(formatArtifact(a));
+            logger.error(message);
+        });
+    }
+
+    private Predicate<Artifact> filter(Dependency d) {
 		String version = removeQualifier(d.getVersion());
 		return a -> 
 			d.getArtifactId().equals(a.getArtifactId())
@@ -164,5 +202,12 @@ public class FeaturePackagePlugin extends AbstractMojo {
 
 	private static boolean dirShape(Manifest m) {
 		return "dir".equals(m.getMainAttributes().getValue("Eclipse-BundleShape"));
+	}
+	
+	private OsgiBundleVerifier getOsgiVerifier() {
+		if (osgiVerifier == null) {
+			osgiVerifier = new OsgiBundleVerifier(logger);
+		}
+		return osgiVerifier;
 	}
 }

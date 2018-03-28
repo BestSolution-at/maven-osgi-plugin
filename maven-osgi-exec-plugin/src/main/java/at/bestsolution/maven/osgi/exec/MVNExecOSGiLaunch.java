@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Tom Schindl<tom.schindl@bestsolution.at> - initial API and implementation
+ *     Tom Schindl - initial API and implementation
  *******************************************************************************/
 package at.bestsolution.maven.osgi.exec;
 
@@ -28,10 +28,12 @@ import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.shared.utils.cli.CommandLineUtils;
+import org.codehaus.plexus.logging.Logger;
 
 import com.google.common.base.Strings;
 
@@ -87,17 +89,18 @@ public class MVNExecOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 		PumpStreamHandler psh = new PumpStreamHandler(System.out, System.err, System.in);
 		exec.setStreamHandler(psh);
 		psh.start();
+
 		try {
 			exec.execute(commandLine, enviro);
+
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Error on executing commandline: " + commandLine, e);
+
 		} finally {
 			try {
 				psh.stop();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.warn("Couldn't stop reading the process output.", e);
 			}
 		}
 	}
