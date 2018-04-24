@@ -1,6 +1,7 @@
 package de.zeiss.maven.osgi.targetplatform.lib.internal;
 
 import java.io.InputStream;
+import java.net.Proxy;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,8 +24,10 @@ public abstract class AbstractDependenciesExtractor {
     public Set<Dependency> doMavenDependenciesGeneration() {
         String parentUrl = getParameterProvider().getEfxclipseUpdateSite();
 
+        Proxy javaProxy = getParameterProvider().getProxy();
+
         String relativeUrlToJarFile = UpdateSiteAccessor.readRelativeTargetPlatformFeatureJarUrl(parentUrl + "/" + getParameterProvider().getEfxclipseSite(),
-                getParameterProvider().getTargetFeatureJarPrefix());
+                getParameterProvider().getTargetFeatureJarPrefix(), javaProxy);
 
         InputStream featureFileInputStream = JarAccessor.readEntry(parentUrl + "/" + relativeUrlToJarFile, getParameterProvider().getFeatureFile());
 

@@ -54,7 +54,7 @@ public class TargetPlatformLoader extends DefaultModelReader {
     public Model read(Reader input, Map<String, ?> options) throws IOException, ModelParseException {
         Model model = super.read(input, options);
         PropertyBasedParameterProvider parameterProvider = new PropertyBasedParameterProvider(model.getProperties());
-        if (parameterProvider.activatePlugin()) {
+        if (parameterProvider.activateExtension()) {
             providePlatformDependencies(model, parameterProvider);
         }
         return model;

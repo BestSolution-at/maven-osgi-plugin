@@ -24,7 +24,7 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>sample.mvn</groupId>
+			<groupId>com.zeiss.maven</groupId>
 			<artifactId>maven-osgi-targetplatform-lib</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

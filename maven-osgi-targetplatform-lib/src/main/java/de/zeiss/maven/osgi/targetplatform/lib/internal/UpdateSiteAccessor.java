@@ -2,6 +2,7 @@ package de.zeiss.maven.osgi.targetplatform.lib.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -18,11 +19,11 @@ import de.zeiss.maven.osgi.targetplatform.lib.LoggingSupport;
  */
 class UpdateSiteAccessor {
 
-    static String readRelativeTargetPlatformFeatureJarUrl(String siteUrl, String targetJarUrlPrefix) {
+    static String readRelativeTargetPlatformFeatureJarUrl(String siteUrl, String targetJarUrlPrefix, Proxy proxy) {
 
         try {
             URL url = new URL(siteUrl);
-            URLConnection connection = url.openConnection();
+            URLConnection connection = proxy != null ? url.openConnection(proxy) : url.openConnection();
             InputStream siteInputStream = connection.getInputStream();
             return extractRelativeTargetPlatformFeatureJarUrl(siteInputStream, targetJarUrlPrefix);
         } catch (IOException e) {
