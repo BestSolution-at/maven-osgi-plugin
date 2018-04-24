@@ -23,9 +23,15 @@ class UpdateSiteAccessor {
 
         try {
             URL url = new URL(siteUrl);
+
+            if (proxy != null) {
+                LoggingSupport.logInfoMessage("Using proxy (" + proxy.address() + ") for getting the targetplatform feature at URL " + siteUrl);
+            }
+
             URLConnection connection = proxy != null ? url.openConnection(proxy) : url.openConnection();
             InputStream siteInputStream = connection.getInputStream();
             return extractRelativeTargetPlatformFeatureJarUrl(siteInputStream, targetJarUrlPrefix);
+
         } catch (IOException e) {
 
             LoggingSupport.logErrorMessage(e.getMessage(), e);
