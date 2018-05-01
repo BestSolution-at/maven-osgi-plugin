@@ -1,10 +1,10 @@
-package at.bestsolution.maven.maven.osgi.targetplatform.extension.internal;
+package at.bestsolution.maven.osgi.targetplatform.extension.internal;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Properties;
 
-import at.bestsolution.maven.maven.osgi.targetplatform.lib.ParameterProvider;
+import at.bestsolution.maven.osgi.targetplatform.lib.ParameterProvider;
 
 public class PropertyBasedParameterProvider implements ParameterProvider {
 

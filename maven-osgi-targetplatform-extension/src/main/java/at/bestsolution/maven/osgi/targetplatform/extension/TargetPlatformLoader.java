@@ -18,9 +18,9 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 
-import at.bestsolution.maven.maven.osgi.targetplatform.extension.internal.PropertyBasedParameterProvider;
-import at.bestsolution.maven.maven.osgi.targetplatform.lib.LoggingSupport;
-import at.bestsolution.maven.maven.osgi.targetplatform.lib.TargetPlatformDependenciesExtractor;
+import at.bestsolution.maven.osgi.targetplatform.extension.internal.PropertyBasedParameterProvider;
+import at.bestsolution.maven.osgi.targetplatform.lib.LoggingSupport;
+import at.bestsolution.maven.osgi.targetplatform.lib.TargetPlatformDependenciesExtractor;
 
 /**
  * Accesses the target platform site, extracts dependencies from there and loads the dependencies into the current maven model.
