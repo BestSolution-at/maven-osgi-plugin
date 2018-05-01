@@ -7,9 +7,9 @@ import at.bestsolution.maven.osgi.targetplatform.lib.internal.AbstractDependenci
  * extracted dependencies will be provided as MavenDependencies.
  *
  */
-public class TargetPlatformDependenciesExtractor  extends AbstractDependenciesExtractor{
+public class TargetPlatformDependenciesExtractor  extends AbstractDependenciesExtractor {
 
-    private final at.bestsolution.maven.osgi.targetplatform.lib.ParameterProvider parameterProvider;
+    private final ParameterProvider parameterProvider;
 
     public TargetPlatformDependenciesExtractor(ParameterProvider parameterProvider) {
         this.parameterProvider = parameterProvider;
