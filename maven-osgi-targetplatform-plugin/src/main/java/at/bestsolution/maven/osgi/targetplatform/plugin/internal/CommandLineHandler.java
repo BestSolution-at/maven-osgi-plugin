@@ -1,5 +1,7 @@
 package at.bestsolution.maven.osgi.targetplatform.plugin.internal;
 
+import java.net.Proxy;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -111,6 +113,11 @@ class CommandLineHandler implements ExtendedParameterProvider {
         opt.addRequiredOption(OUTPUT_FILE_ARTIFACT_ID_ARGUMENT, null, true, "artifact id of generated pom");
         opt.addRequiredOption(OUTPUT_FILE_VERSION_ARGUMENT, null, true, "version of generated pom");
         return opt;
+    }
+
+    @Override
+    public Proxy getProxy() {
+        return null;
     }
 
 }

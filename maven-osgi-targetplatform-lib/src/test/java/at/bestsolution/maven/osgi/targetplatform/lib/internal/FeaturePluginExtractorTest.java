@@ -8,6 +8,9 @@ import java.util.Set;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 import org.junit.Test;
 
+import at.bestsolution.maven.osgi.targetplatform.lib.internal.FeaturePluginExtractor;
+
+
 public class FeaturePluginExtractorTest {
 
 	private static final String FEATURE_VERSION = "1.0.0.11111";

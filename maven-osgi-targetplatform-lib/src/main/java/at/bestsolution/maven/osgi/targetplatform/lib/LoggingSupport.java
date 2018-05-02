@@ -31,4 +31,20 @@ public class LoggingSupport {
             System.out.println(message);
         }
     }
+
+    public static void logInfoMessage(String message) {
+        if (LOGGER != null) {
+            LOGGER.info(message);
+        } else {
+            System.out.println(message);
+        }
+    }
+
+    public static void logDebugMessage(String message) {
+        if (LOGGER != null) {
+            LOGGER.debug(message);
+        } else {
+            System.out.println(message);
+        }
+    }
 }

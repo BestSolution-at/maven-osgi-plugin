@@ -3,11 +3,16 @@ package at.bestsolution.maven.osgi.targetplatform.lib.internal;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Set;
 
 import org.apache.maven.model.Dependency;
 import org.junit.Test;
+
+import at.bestsolution.maven.osgi.targetplatform.lib.internal.AdditionalDependencyProvider;
+import at.bestsolution.maven.osgi.targetplatform.lib.internal.FeaturePluginFilter;
 
 public class AdditionalDependencyProviderTest {
 

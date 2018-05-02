@@ -1,4 +1,4 @@
-package at.bestsolution.maven.osgi.targetplatform.targetplatform.extension;
+package at.bestsolution.maven.osgi.targetplatform.extension;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,7 +18,7 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 
-import at.bestsolution.maven.osgi.targetplatform.targetplatform.extension.internal.PropertyBasedParameterProvider;
+import at.bestsolution.maven.osgi.targetplatform.extension.internal.PropertyBasedParameterProvider;
 import at.bestsolution.maven.osgi.targetplatform.lib.LoggingSupport;
 import at.bestsolution.maven.osgi.targetplatform.lib.TargetPlatformDependenciesExtractor;
 
@@ -54,7 +54,7 @@ public class TargetPlatformLoader extends DefaultModelReader {
     public Model read(Reader input, Map<String, ?> options) throws IOException, ModelParseException {
         Model model = super.read(input, options);
         PropertyBasedParameterProvider parameterProvider = new PropertyBasedParameterProvider(model.getProperties());
-        if (parameterProvider.activatePlugin()) {
+        if (parameterProvider.activateExtension()) {
             providePlatformDependencies(model, parameterProvider);
         }
         return model;

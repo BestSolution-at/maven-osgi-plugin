@@ -1,5 +1,7 @@
-package at.bestsolution.maven.osgi.targetplatform.targetplatform.extension.internal;
+package at.bestsolution.maven.osgi.targetplatform.extension.internal;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.Properties;
 
 import at.bestsolution.maven.osgi.targetplatform.lib.ParameterProvider;
@@ -13,12 +15,13 @@ public class PropertyBasedParameterProvider implements ParameterProvider {
     private static final String EFXCLIPSE_SITE_PROPERTY_KEY = "efxclipse.site";
     private static final String EFXCLIPSE_UPDATE_SITE_PROPERTY_KEY = "efxclipse.update.site";
 
-    private  String additionalDependenciesFile;
-    private  String whitelistFile;
-    private  String featureFile;
-    private  String targetFeatureJarPrefix;
-    private  String efxclipseSite;
-    private  String efxclipseUpdateSite;
+    private String additionalDependenciesFile;
+    private String whitelistFile;
+    private String featureFile;
+    private String targetFeatureJarPrefix;
+    private String efxclipseSite;
+    private String efxclipseUpdateSite;
+    private boolean activate;
 
     public PropertyBasedParameterProvider(Properties properties) {
         this.additionalDependenciesFile = properties.getProperty(ADDITIONAL_DEPENDENCIES_FILE_PROPERTY_KEY, "/additional-dependencies.txt");
@@ -27,6 +30,7 @@ public class PropertyBasedParameterProvider implements ParameterProvider {
         this.targetFeatureJarPrefix = properties.getProperty(TARGET_FEATURE_JAR_PREFIX_PROPERTY_KEY, "features/org.eclipse.fx.target.feature_");
         this.efxclipseSite = properties.getProperty(EFXCLIPSE_SITE_PROPERTY_KEY, "site.xml");
         this.efxclipseUpdateSite = properties.getProperty(EFXCLIPSE_UPDATE_SITE_PROPERTY_KEY);
+        this.activate = efxclipseUpdateSite != null;
 
         overrideModelPropertiesWithSystemProperties();
     }
@@ -49,8 +53,8 @@ public class PropertyBasedParameterProvider implements ParameterProvider {
         }
     }
 
-    public boolean activatePlugin() {
-        return efxclipseUpdateSite != null;
+    public boolean activateExtension() {
+        return activate;
     }
 
     @Override
@@ -88,4 +92,16 @@ public class PropertyBasedParameterProvider implements ParameterProvider {
         return efxclipseUpdateSite;
     }
 
+    @Override
+    public Proxy getProxy() {
+
+        String proxyHost = System.getProperty("http.proxyHost");
+        String proxyPort = System.getProperty("http.proxyPort");
+
+        if (proxyHost == null || proxyPort == null) {
+            return null;
+        }
+
+        return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, Integer.parseInt(proxyPort)));
+    }
 }
