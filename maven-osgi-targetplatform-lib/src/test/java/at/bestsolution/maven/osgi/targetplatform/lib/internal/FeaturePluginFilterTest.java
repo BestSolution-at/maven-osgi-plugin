@@ -3,7 +3,11 @@ package at.bestsolution.maven.osgi.targetplatform.lib.internal;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +16,8 @@ import java.util.stream.Collectors;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import at.bestsolution.maven.osgi.targetplatform.lib.internal.FeaturePluginFilter;
 
 public class FeaturePluginFilterTest {
 

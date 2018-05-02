@@ -14,8 +14,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.maven.model.Dependency;
 import org.junit.Test;
 
-import at.bestsolution.maven.osgi.targetplatform.plugin.internal.PomWriter;
-
 public class PomWriterTest {
 
     private static final String DELIMITER = "\\Z";

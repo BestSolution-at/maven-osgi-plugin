@@ -10,6 +10,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.logging.Logger;
 
 import at.bestsolution.maven.osgi.targetplatform.lib.LoggingSupport;
@@ -43,6 +44,9 @@ public class TargetPlatformGenerator extends AbstractMojo {
     @Parameter(required = true, readonly = true)
     private String efxclipseUpdateSite;
 
+    @Parameter(defaultValue = "${settings}", required = false)
+    private Settings settings;
+
     @Component
     private Logger logger;
 
@@ -55,7 +59,7 @@ public class TargetPlatformGenerator extends AbstractMojo {
         LoggingSupport.setLogger(logger);
 
         MainApplication mainApplication = new MainApplication(new DefaultParameterProvider(project.getVersion(), project.getArtifactId(), project.getGroupId(),
-                outputFile, additionalDependenciesFile, whitelistFile, featureFile, targetFeatureJarPrefix, efxclipseSite, efxclipseUpdateSite));
+                outputFile, additionalDependenciesFile, whitelistFile, featureFile, targetFeatureJarPrefix, efxclipseSite, efxclipseUpdateSite, settings));
         mainApplication.run(this.project, this.session);
 
     }

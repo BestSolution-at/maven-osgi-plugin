@@ -12,6 +12,8 @@ import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import at.bestsolution.maven.osgi.targetplatform.lib.internal.FeaturePluginToMavenDependencyConverter;
+
 public class FeaturePluginToMavenDependencyConverterTest {
 
 	 private final String FEATURE_PLUGIN_ID_FX="org.eclipse.fx.ui.keybindings";
