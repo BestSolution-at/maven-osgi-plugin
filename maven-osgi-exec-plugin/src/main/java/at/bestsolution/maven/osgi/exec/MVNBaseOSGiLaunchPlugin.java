@@ -185,14 +185,21 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 			if( ! Files.exists(p) ) {
 				try(ZipFile z = new ZipFile(b.path.toFile()) ) {
 					z.stream().forEach( e -> {
-						Path ep = explodeDir.resolve(e.getName());
+						Path ep = p.resolve(e.getName());
 						if( e.isDirectory() ) {
 							try {
 								Files.createDirectories(ep);
 							} catch (IOException e1) {
-								logger.error("Failed to create directories for path " + ep, e1);
+								throw new RuntimeException(e1);
 							}
 						} else {
+							if( ! Files.exists(ep.getParent()) ) {
+								try {
+									Files.createDirectories(ep.getParent());
+								} catch (IOException e1) {
+									throw new RuntimeException(e1);
+								}
+							}
 							try(OutputStream out = Files.newOutputStream(ep);
 									InputStream in = z.getInputStream(e)) {
 								byte[] buf = new byte[1024];
@@ -201,12 +208,12 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 									out.write(buf, 0, l);
 								}
 							} catch (IOException e2) {
-								logger.error("Can not explode bundle jar " + b.path + " to " + explodeDir, e2);
+								throw new RuntimeException(e2);
 							}
 						}
 					});
 				} catch (Exception e) {
-					logger.error("General error while unpacking bundle jar " + b.path, e);
+					throw new RuntimeException(e);
 				}
 			}
 			return p;
