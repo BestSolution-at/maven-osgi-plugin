@@ -4,7 +4,7 @@
 
 	<groupId>at.bestsolution</groupId>
 	<artifactId>maven-osgi-targetplatform-extension</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Maven OSGi Target Platform Extension</name>
@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>at.bestsolution</groupId>
 			<artifactId>maven-osgi-targetplatform-lib</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
