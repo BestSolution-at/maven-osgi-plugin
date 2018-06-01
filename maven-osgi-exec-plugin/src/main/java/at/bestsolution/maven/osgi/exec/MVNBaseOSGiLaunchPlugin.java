@@ -102,7 +102,7 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 			bundles.add(new Bundle(getOsgiVerifier().getManifest(project.getArtifact()).get(),binary));
 		}
 		
-		Path p = Paths.get(System.getProperty("java.io.tmpdir")).resolve(project.getArtifactId()).resolve("configuration");
+		Path p = Paths.get(System.getProperty("java.io.tmpdir")).resolve(project.getGroupId() + "-" + project.getArtifactId()).resolve(project.getArtifactId()).resolve("configuration");
 
 		Optional<Bundle> simpleConfigurator = bundles.stream()
 				.filter(b -> "org.eclipse.equinox.simpleconfigurator".equals(b.symbolicName)).findFirst();
