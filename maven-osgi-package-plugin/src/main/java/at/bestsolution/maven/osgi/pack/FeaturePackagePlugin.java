@@ -45,8 +45,26 @@ import aQute.bnd.version.Version;
 import static at.bestsolution.maven.osgi.pack.OsgiBundleVerifier.formatArtifact;
 import static at.bestsolution.maven.osgi.pack.OsgiBundleVerifier.formatDependency;
 
+/**
+ * Creates a feature xml from the referenced dependencies.
+ *
+ * Supports multiplatform bundles with evaluating the maven dependency artifact classifier and maps it to OSGI platform
+ * properties in the following way:
+ * <ul>
+ *     <li>mac: os=macosx, ws=carbon, arch=x86_64</li>
+ *     <li>win32: os=win32, ws=win32, arch=x86</li>
+ *     <li>x64: os=win32, ws=win32, arch=x86_64</li>
+ * </ul>
+ */
 @Mojo(name="package-feature", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class FeaturePackagePlugin extends AbstractMojo {
+
+	/** constant string for the recoginized maven artifact classfier to support multiplatform feature bundles */
+	private static final String CLASSIFIER_MAC = "mac";
+	private static final String CLASSIFIER_WIN32 = "win32";
+	private static final String CLASSIFIER_X64 = "x64";
+
+
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	private MavenProject project;
 	
@@ -121,6 +139,7 @@ public class FeaturePackagePlugin extends AbstractMojo {
 //			p.setAttribute("install-size", "1"); // FIXME
 			p.setAttribute("version", bundleVersion(mm));
 			p.setAttribute("unpack", dirShape(mm) + "");
+			generatePlatformAttributes(p, first.get());
 			
 			d.addChild(p);
 		}
@@ -153,6 +172,24 @@ public class FeaturePackagePlugin extends AbstractMojo {
 		}
 	}
 
+	private void generatePlatformAttributes(Xpp3Dom childNode, Artifact artifact) {
+		if (CLASSIFIER_MAC.equalsIgnoreCase(artifact.getClassifier())) {
+			childNode.setAttribute("os", "macosx");
+			childNode.setAttribute("ws", "cocoa");
+			childNode.setAttribute("arch", "x86_64");
+
+		} else if (CLASSIFIER_WIN32.equalsIgnoreCase(artifact.getClassifier())) {
+			childNode.setAttribute("os", "win32");
+			childNode.setAttribute("ws", "win32");
+			childNode.setAttribute("arch", "x86");
+
+		} else if (CLASSIFIER_X64.equalsIgnoreCase(artifact.getClassifier())) {
+			childNode.setAttribute("os", "win32");
+			childNode.setAttribute("ws", "win32");
+			childNode.setAttribute("arch", "x86_64");
+		}
+	}
+
 	private void printNonOsgiBundles(List<Artifact> nonOsgiArtifacts) {
         if (nonOsgiArtifacts.isEmpty()) {
             return;
@@ -167,9 +204,10 @@ public class FeaturePackagePlugin extends AbstractMojo {
 
     private Predicate<Artifact> filter(Dependency d) {
 		String version = removeQualifier(d.getVersion());
-		return a -> 
+		return a ->
 			d.getArtifactId().equals(a.getArtifactId())
 			&& d.getGroupId().equals(a.getGroupId())
+			&& (d.getClassifier() == null || ((d.getClassifier() != null) && d.getClassifier().equalsIgnoreCase(a.getClassifier())))
 			&& version.equals(removeQualifier(a.getVersion()));
 	}
 	
