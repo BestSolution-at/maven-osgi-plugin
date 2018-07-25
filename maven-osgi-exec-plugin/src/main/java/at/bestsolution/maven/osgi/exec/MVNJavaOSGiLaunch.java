@@ -17,6 +17,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,13 +26,19 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.shared.utils.cli.CommandLineException;
+import org.apache.maven.shared.utils.cli.CommandLineUtils;
 import org.codehaus.plexus.logging.Logger;
 
 @Mojo(name="exec-osgi-java", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class MVNJavaOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 
 	private static final String EQUINOX_LAUNCHER_MAIN_CLASS = "org.eclipse.equinox.launcher.Main";
+
+	@Parameter(property = "exec.args")
+	private String commandlineArgs;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		Path ini = generateConfigIni(project);
@@ -52,6 +60,8 @@ public class MVNJavaOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 		cmd.add("file:" + ini.toString());
 		cmd.addAll(programArguments);
 
+		appendCommandLineArgumentsTo(cmd);
+
 		System.getProperties().putAll(vmProperties);
 		
 		Thread t = new Thread() {
@@ -72,6 +82,16 @@ public class MVNJavaOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 			t.join();
 		} catch (InterruptedException e) {
 			logger.error("Error on waiting for Equinox launcher to finish.", e);
+		}
+	}
+
+	private void appendCommandLineArgumentsTo(List<String> cmds) throws MojoExecutionException {
+		if (commandlineArgs != null) {
+			try {
+				cmds.addAll(Arrays.asList(CommandLineUtils.translateCommandline(commandlineArgs)));
+			} catch (CommandLineException e) {
+				throw new MojoExecutionException(e.getMessage());
+			}
 		}
 	}
 }
