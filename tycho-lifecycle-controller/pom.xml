@@ -4,10 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>at.bestsolution</groupId>
     <artifactId>tycho-lifecycle-controller</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
+    
+    <parent>
+		<groupId>at.bestsolution</groupId>
+		<artifactId>maven-osgi-modules</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
 
     <name>Maven Tycho-Lifecycle Controller Extension</name>
     <description>

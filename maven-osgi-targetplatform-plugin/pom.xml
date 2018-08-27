@@ -5,6 +5,12 @@
 	<artifactId>maven-osgi-targetplatform-plugin</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
+	
+	<parent>
+		<groupId>at.bestsolution</groupId>
+		<artifactId>maven-osgi-modules</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
 
 	<name>Maven OSGi Target Platform Plug-in</name>
 	<description>Maven Plug-in to provide target platform libraries.</description>

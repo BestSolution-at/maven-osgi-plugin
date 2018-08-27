@@ -1,9 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>at.bestsolution</groupId>
 	<artifactId>maven-osgi-exec-plugin</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	
+	<parent>
+		<groupId>at.bestsolution</groupId>
+		<artifactId>maven-osgi-modules</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
 
     <packaging>maven-plugin</packaging>
 
@@ -33,13 +37,6 @@
 		</developer>
 	</developers>
 	
-	<distributionManagement>
-		<snapshotRepository>
-			<id>sonatype</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -168,17 +165,6 @@
 						</goals>											
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
-				<extensions>true</extensions>				
-				<configuration>
-					<serverId>sonatype</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>false</autoReleaseAfterClose>					
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -5,6 +5,12 @@
 	<artifactId>maven-osgi-package-plugin</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
+	
+	<parent>
+		<groupId>at.bestsolution</groupId>
+		<artifactId>maven-osgi-modules</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
 
 	<name>Maven OSGi Package Plug-in</name>
 	<description>Maven Plug-in to execute OSGi-Applications from maven</description>
@@ -27,13 +33,6 @@
 			</roles>
 		</developer>
 	</developers>
-
-	<distributionManagement>
-		<snapshotRepository>
-			<id>sonatype</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
 
 	<properties>
 		<maven.version>3.5.0</maven.version>
@@ -183,18 +182,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>sonatype</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>false</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
-
 		</plugins>
 	</build>
 </project>
