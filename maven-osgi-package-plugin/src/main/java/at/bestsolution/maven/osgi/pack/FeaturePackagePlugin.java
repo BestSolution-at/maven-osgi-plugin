@@ -63,6 +63,8 @@ public class FeaturePackagePlugin extends AbstractMojo {
 	private static final String CLASSIFIER_MAC = "mac";
 	private static final String CLASSIFIER_WIN32 = "win32";
 	private static final String CLASSIFIER_X64 = "x64";
+	private static final String CLASSIFIER_WIN_64 = "win32_64";
+	private static final String CLASSIFIER_LINUX_64 = "linux_64";
 
 
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
@@ -183,10 +185,16 @@ public class FeaturePackagePlugin extends AbstractMojo {
 			childNode.setAttribute("ws", "win32");
 			childNode.setAttribute("arch", "x86");
 
-		} else if (CLASSIFIER_X64.equalsIgnoreCase(artifact.getClassifier())) {
+		} else if (CLASSIFIER_X64.equalsIgnoreCase(artifact.getClassifier()) || CLASSIFIER_WIN_64.equalsIgnoreCase(artifact.getClassifier())) {
 			childNode.setAttribute("os", "win32");
 			childNode.setAttribute("ws", "win32");
 			childNode.setAttribute("arch", "x86_64");
+			
+		} else if( CLASSIFIER_LINUX_64.equalsIgnoreCase(artifact.getClassifier()) ) {
+			childNode.setAttribute("os", "linux");
+			childNode.setAttribute("ws", "gtk");
+			childNode.setAttribute("arch", "x86_64");
+			
 		}
 	}
 
