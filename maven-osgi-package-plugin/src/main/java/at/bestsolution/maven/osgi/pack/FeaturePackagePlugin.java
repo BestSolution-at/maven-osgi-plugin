@@ -16,7 +16,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.jar.JarFile;
@@ -38,6 +40,9 @@ import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomWriter;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
 
 import aQute.bnd.version.MavenVersion;
 import aQute.bnd.version.Version;
@@ -141,7 +146,7 @@ public class FeaturePackagePlugin extends AbstractMojo {
 //			p.setAttribute("install-size", "1"); // FIXME
 			p.setAttribute("version", bundleVersion(mm));
 			p.setAttribute("unpack", dirShape(mm) + "");
-			generatePlatformAttributes(p, first.get());
+			generatePlatformAttributes(p, mm, first.get());
 			
 			d.addChild(p);
 		}
@@ -174,7 +179,7 @@ public class FeaturePackagePlugin extends AbstractMojo {
 		}
 	}
 
-	private void generatePlatformAttributes(Xpp3Dom childNode, Artifact artifact) {
+	private void generatePlatformAttributes(Xpp3Dom childNode, Manifest mm, Artifact artifact) {
 		if (CLASSIFIER_MAC.equalsIgnoreCase(artifact.getClassifier())) {
 			childNode.setAttribute("os", "macosx");
 			childNode.setAttribute("ws", "cocoa");
@@ -195,9 +200,38 @@ public class FeaturePackagePlugin extends AbstractMojo {
 			childNode.setAttribute("ws", "gtk");
 			childNode.setAttribute("arch", "x86_64");
 			
+		} else if( mm.getMainAttributes().getValue("Eclipse-PlatformFilter") != null ) {
+			try {
+				Filter filter = FrameworkUtil.createFilter(mm.getMainAttributes().getValue("Eclipse-PlatformFilter"));
+				String[][] filterTypes = {
+						{ "win32", "win32", "x86_64" },
+						{ "win32", "win32", "x86" },
+						{ "macosx", "cocoa", "x86_64" },
+						{ "linux", "gtk", "x86" },
+						{ "linux", "gtk", "x86_64" }
+				};
+				for( String[] filterType : filterTypes ) {
+					if( filter.matches(createMap(filterType[0], filterType[1], filterType[2])) ) {
+						childNode.setAttribute("os", filterType[0]);
+						childNode.setAttribute("ws", filterType[1]);
+						childNode.setAttribute("arch", filterType[2]);
+						break;
+					}
+				}
+			} catch (InvalidSyntaxException e) {
+				
+			}
 		}
 	}
 
+	private Map<String, String> createMap(String os, String ws, String arch) {
+		Map<String, String> m = new HashMap<>();
+		m.put("osgi.os", os);
+		m.put("osgi.ws", ws);
+		m.put("osgi.arch", arch);
+		return m;
+	}
+	
 	private void printNonOsgiBundles(List<Artifact> nonOsgiArtifacts) {
         if (nonOsgiArtifacts.isEmpty()) {
             return;
