@@ -129,26 +129,32 @@ public class FeaturePackagePlugin extends AbstractMojo {
         List<Artifact> nonOsgiArtifacts = new ArrayList<>();
 
 		for( Dependency a : project.getDependencies() ) {
-			Xpp3Dom p = new Xpp3Dom("plugin");
+			
 			Optional<Artifact> first = project.getArtifacts().stream().filter(filter(a)).findFirst();
 			if( ! first.isPresent() ) {
 				throw new IllegalStateException("Could not find artifact for '" + formatDependency(a) + "'");
 			}
 
-            if (!getOsgiVerifier().isBundle(first.get())) {
+			OsgiBundleVerifier osgiVerifier = getOsgiVerifier();
+			if( osgiVerifier.isFeature(first.get()) ) {
+				Xpp3Dom p = new Xpp3Dom("includes");
+				p.setAttribute("id", a.getArtifactId());
+				p.setAttribute("version", a.getVersion());
+				d.addChild(p);
+			} else if( osgiVerifier.isBundle(first.get()) ) {
+				Xpp3Dom p = new Xpp3Dom("plugin");
+				Manifest mm = getManifest(first.get());
+				p.setAttribute("id", bundleName(mm));
+//				p.setAttribute("download-size", "1"); // FIXME
+//				p.setAttribute("install-size", "1"); // FIXME
+				p.setAttribute("version", bundleVersion(mm));
+				p.setAttribute("unpack", dirShape(mm) + "");
+				generatePlatformAttributes(p, mm, first.get());
+				
+				d.addChild(p);
+			} else {
                 nonOsgiArtifacts.add(first.get());
-                continue;
             }
-
-			Manifest mm = getManifest(first.get());
-			p.setAttribute("id", bundleName(mm));
-//			p.setAttribute("download-size", "1"); // FIXME
-//			p.setAttribute("install-size", "1"); // FIXME
-			p.setAttribute("version", bundleVersion(mm));
-			p.setAttribute("unpack", dirShape(mm) + "");
-			generatePlatformAttributes(p, mm, first.get());
-			
-			d.addChild(p);
 		}
 
         if (!nonOsgiArtifacts.isEmpty()) {
