@@ -52,6 +52,21 @@ final public class OsgiBundleVerifier {
 
 		return isOsgi;
 	}
+	
+	public boolean isFeature(Artifact artifact) {
+		if ("pom".equalsIgnoreCase(artifact.getType())) {
+			return false;
+		}
+		
+		boolean isFeature = false;
+		try (JarFile f = new JarFile(artifact.getFile())) {
+			return f.getEntry("feature.xml") != null;
+		} catch (IOException e) {
+			logger.error("Can not process artifact " + formatArtifact(artifact) + ". Jar File of " + artifact.getFile()
+			+ " can not be created");
+		}
+		return isFeature;
+	}
 
 	public static String formatArtifact(Artifact artifact) {
 		return format(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion());
