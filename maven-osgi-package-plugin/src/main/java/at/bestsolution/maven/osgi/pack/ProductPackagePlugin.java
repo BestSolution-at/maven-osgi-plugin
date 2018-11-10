@@ -12,6 +12,7 @@ package at.bestsolution.maven.osgi.pack;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.jar.JarFile;
 
@@ -42,6 +43,9 @@ public class ProductPackagePlugin extends AbstractMojo {
 
     @Parameter(required = true)
     private Product product;
+    
+	@Parameter
+	private List<String> noneRootIUs;
 
     @Component
     private Logger logger;
@@ -142,6 +146,9 @@ public class ProductPackagePlugin extends AbstractMojo {
         project.getArtifacts().stream().filter(this::pomFilter).filter(this::featureFilter).map(a -> {
             Xpp3Dom feature = new Xpp3Dom("feature");
             feature.setAttribute("id", a.getArtifactId());
+            if( noneRootIUs == null || ! noneRootIUs.contains(a.getGroupId() + ":" + a.getArtifactId()) ) {
+            	feature.setAttribute("installMode", "root");	
+            }
             return feature;
         }).forEach(features::addChild);
         xppProduct.addChild(features);
