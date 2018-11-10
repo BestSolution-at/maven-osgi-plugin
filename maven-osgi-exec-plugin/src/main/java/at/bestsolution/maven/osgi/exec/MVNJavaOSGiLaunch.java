@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -64,6 +65,13 @@ public class MVNJavaOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 		cmd.addAll(programArguments);
 
 		appendCommandLineArgumentsTo(cmd);
+		
+		if( vmProperties.containsKey(OSGI_FRAMEWORK_EXTENSIONS) ) {
+			String extensionClasspath = extensionPaths.stream().map(Path::toString).collect(Collectors.joining(",","file:",""));
+			if( ! extensionClasspath.trim().isEmpty() ) {
+				vmProperties.put("osgi.frameworkClassPath",".," + extensionClasspath);
+			}
+		}
 
 		System.getProperties().putAll(vmProperties);
 		
