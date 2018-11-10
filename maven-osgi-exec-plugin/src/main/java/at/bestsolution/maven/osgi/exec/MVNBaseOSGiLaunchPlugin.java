@@ -29,6 +29,7 @@ import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Component;
@@ -123,14 +124,14 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 				writer.append(LF);
 				writer.append("osgi.bundles.defaultStartLevel=4");
 				writer.append(LF);
-				writer.append("osgi.install.area=" + p.getParent().resolve("install").toUri().toString());
+				writer.append("osgi.install.area=" + toInstallAreaURL(p));
 				writer.append(LF);
-				writer.append("osgi.framework=" + equinox.get().path.toUri().toString());
+				writer.append("osgi.framework=" + toFrameworkURL(equinox.get(), explosionPath));
 				writer.append(LF);
 				writer.append("eclipse.p2.data.area=@config.dir/.p2");
 				writer.append(LF);
-				writer.append("org.eclipse.equinox.simpleconfigurator.configUrl="
-						+ bundlesInfo.toAbsolutePath().toUri().toString());
+				writer.append(
+						"org.eclipse.equinox.simpleconfigurator.configUrl=" + toSimpleConfigurationURL(bundlesInfo));
 				writer.append(LF);
 				writer.append("osgi.configuration.cascaded=false");
 				writer.append(LF);
@@ -144,7 +145,45 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 		return p;
 	}
 
-	private Path generateBundlesInfo(Path configurationDir, Path explosionPath, Set<Bundle> bundles, Set<Path> extensionPaths) {
+	private static String toInstallAreaURL(Path p) {
+		String rv = p.getParent().resolve("install").toString();
+		if (SystemUtils.IS_OS_WINDOWS) {
+			rv = rv.replace("\\", "\\\\").replace(":", "\\:");
+		}
+		return "file\\:" + rv;
+	}
+
+	private static String toSimpleConfigurationURL(Path bundlesInfo) {
+		String rv = bundlesInfo.toAbsolutePath().toString();
+		if (SystemUtils.IS_OS_WINDOWS) {
+			rv = rv.replace('\\', '/').replace(":", "\\:");
+		}
+		return "file\\:" + rv;
+	}
+
+	private String toFrameworkURL(Bundle bundle, Path explodePath) {
+		String rv = bundle.path.toString();
+		if (vmProperties.containsKey(OSGI_FRAMEWORK_EXTENSIONS)) {
+			try {
+				if (!Files.exists(explodePath)) {
+					Files.createDirectories(explodePath);
+				}
+
+				Path targetPath = explodePath.resolve(bundle.path.getFileName());
+				Files.copy(bundle.path, targetPath, StandardCopyOption.REPLACE_EXISTING);
+				rv = targetPath.toString();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		if (SystemUtils.IS_OS_WINDOWS) {
+			rv = rv.replace('\\', '/').replace(":", "\\:");
+		}
+		return "file\\:" + rv;
+	}
+
+	private Path generateBundlesInfo(Path configurationDir, Path explosionPath, Set<Bundle> bundles,
+			Set<Path> extensionPaths) {
 		Path bundleInfo = configurationDir.resolve("org.eclipse.equinox.simpleconfigurator").resolve("bundles.info");
 		try {
 			Files.createDirectories(bundleInfo.getParent());
@@ -174,7 +213,7 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 					writer.append("," + b.startLevel); // Start Level
 					writer.append("," + b.autoStart); // Auto-Start
 					writer.append(LF);
-	
+
 				}
 			}
 
@@ -221,22 +260,23 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 				}
 			}
 			return p;
-		} else if( vmProperties.containsKey(OSGI_FRAMEWORK_EXTENSIONS) ) {
-			List<String> extensions = Arrays.asList(((String)vmProperties.get(OSGI_FRAMEWORK_EXTENSIONS)).split(","));
-			
-			if( "org.eclipse.osgi".equals(b.symbolicName) || extensions.stream().anyMatch( v -> v.trim().equals(b.symbolicName)) ) {
+		} else if (vmProperties.containsKey(OSGI_FRAMEWORK_EXTENSIONS)) {
+			List<String> extensions = Arrays.asList(((String) vmProperties.get(OSGI_FRAMEWORK_EXTENSIONS)).split(","));
+
+			if ("org.eclipse.osgi".equals(b.symbolicName)
+					|| extensions.stream().anyMatch(v -> v.trim().equals(b.symbolicName))) {
 				try {
-					if( ! Files.exists(explodeDir) ) {
-						Files.createDirectories(explodeDir);	
+					if (!Files.exists(explodeDir)) {
+						Files.createDirectories(explodeDir);
 					}
-					
+
 					Path targetFile = explodeDir.resolve(b.path.getFileName());
 					Files.copy(b.path, targetFile, StandardCopyOption.REPLACE_EXISTING);
-					
-					if( ! "org.eclipse.osgi".equals(b.symbolicName) ) {
+
+					if (!"org.eclipse.osgi".equals(b.symbolicName)) {
 						extensionPaths.add(targetFile);
 					}
-					
+
 					return targetFile;
 				} catch (IOException e) {
 					throw new RuntimeException(e);
