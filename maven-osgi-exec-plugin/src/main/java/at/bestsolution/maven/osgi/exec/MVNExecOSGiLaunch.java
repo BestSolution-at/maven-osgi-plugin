@@ -16,10 +16,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.exec.CommandLine;
@@ -53,7 +55,8 @@ public class MVNExecOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		Path ini = generateConfigIni(project);
+		Set<Path> extensionPaths = new HashSet<>();
+		Path ini = generateConfigIni(project, extensionPaths);
 		
 		Optional<File> launcherJar = project.getArtifacts().stream()
 				.filter(a -> "org.eclipse.equinox.launcher".equals(a.getArtifactId())).findFirst()
@@ -65,6 +68,12 @@ public class MVNExecOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 
 		List<String> commandArguments = new ArrayList<>();
 		commandArguments.addAll(vmProperties.entrySet().stream().map( e -> "-D" + e.getKey()+"="+e.getValue()).collect(Collectors.toList()));
+		if( vmProperties.containsKey(OSGI_FRAMEWORK_EXTENSIONS) ) {
+			String extensionClasspath = extensionPaths.stream().map(Path::toString).collect(Collectors.joining(",","file:",""));
+			if( ! extensionClasspath.trim().isEmpty() ) {
+				commandArguments.add("-Dosgi.frameworkClassPath=.," + extensionClasspath);
+			}
+		}
 		if (!Strings.isNullOrEmpty(argsProp)) {
 			handleSystemPropertyArguments(argsProp, commandArguments);
 		}

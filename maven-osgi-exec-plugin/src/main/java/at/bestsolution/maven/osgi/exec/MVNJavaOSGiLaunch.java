@@ -19,8 +19,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -41,7 +43,8 @@ public class MVNJavaOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 	private String commandlineArgs;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		Path ini = generateConfigIni(project);
+		Set<Path> extensionPaths = new HashSet<>();
+		Path ini = generateConfigIni(project, extensionPaths);
 		
 		Optional<URL> launcherJar = project.getArtifacts().stream()
 				.filter(a -> "org.eclipse.equinox.launcher".equals(a.getArtifactId())).findFirst()
