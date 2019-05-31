@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.jar.JarFile;
-
+import java.util.stream.Collectors;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -67,19 +67,14 @@ public class ProductPackagePlugin extends AbstractMojo {
 
         Xpp3Dom launcherArgs = new Xpp3Dom("launcherArgs");
         Xpp3Dom programArgs = new Xpp3Dom("programArgs");
-        StringBuilder programArgsVal = new StringBuilder();
-        for (String a : product.launcherArgs.programArguments) {
-            programArgsVal.append(a + " ");
-        }
-        programArgs.setValue(programArgsVal.toString());
+        programArgs.setValue(product.launcherArgs.programArguments.stream().collect(Collectors.joining(" ")));
         launcherArgs.addChild(programArgs);
 
         Xpp3Dom vmArgs = new Xpp3Dom("vmArgs");
-        StringBuilder vmArgsVal = new StringBuilder();
-        for (Entry<Object, Object> e : product.launcherArgs.vmProperties.entrySet()) {
-            vmArgsVal.append("-D" + e.getKey() + "=" + e.getValue() + " ");
-        }
-        vmArgs.setValue(vmArgsVal.toString());
+        vmArgs.setValue(
+        	product.launcherArgs.vmProperties.entrySet().stream()
+        		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
+        		.collect(Collectors.joining(" ")));
         launcherArgs.addChild(vmArgs);
 
         xppProduct.addChild(launcherArgs);
