@@ -139,6 +139,12 @@ public class ProductPackagePlugin extends AbstractMojo {
         
         
         xppProduct.addChild(new Xpp3Dom("windowImages"));
+        
+        if (product.splashLocation != null) {
+			Xpp3Dom splash = new Xpp3Dom("splash");
+			splash.setAttribute("location", product.splashLocation);
+			xppProduct.addChild(splash);
+        }
 
         Xpp3Dom features = new Xpp3Dom("features");
         project.getArtifacts().stream().filter(this::pomFilter).filter(this::featureFilter).map(a -> {

@@ -22,5 +22,6 @@ public class Product {
 	public boolean includeLaunchers;
 	public LauncherArgs launcherArgs;
 	public Launcher launcher;
+	public String splashLocation;
 	protected Map<String, Integer> startLevels;
 }
