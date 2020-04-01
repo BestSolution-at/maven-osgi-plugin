@@ -51,11 +51,12 @@ final public class OsgiBundleVerifier {
     }
 
     public Optional<Manifest> getManifest(Artifact artifact) {
-
         Path pathToArtifact = artifact.getFile().toPath();
         Optional<Manifest> manifest = Optional.empty();
 
-        if (Files.isDirectory(pathToArtifact)) {
+        if ("pom".equals(artifact.getType())) {
+            return Optional.empty();
+        } else if (Files.isDirectory(pathToArtifact)) {
             Path mf = pathToArtifact.resolve("META-INF").resolve("MANIFEST.MF");
             if( ! Files.exists(mf) ) {
                 return Optional.empty();
@@ -70,12 +71,12 @@ final public class OsgiBundleVerifier {
         } else {
             try (JarFile f = new JarFile(pathToArtifact.toFile())) {
                 if (f.getManifest() == null) {
-                    logger.error("Can not process artifact " + formatArtifact(artifact) + ". Jar File of " + artifact.getFile() + " have no MANIFEST.MF");
+                    logger.warn("Ignored artifact " + formatArtifact(artifact) + ". Jar " + artifact.getFile() + " has no MANIFEST.MF");
                 }
                 manifest = Optional.ofNullable(f.getManifest());
 
             } catch (IOException e) {
-                logger.error("Can not process artifact " + formatArtifact(artifact) + ". Jar File of " + artifact.getFile() + " can not be created");
+                logger.error("Can not process artifact " + formatArtifact(artifact) + ". Jar " + artifact.getFile() + " can not be opened");
             }
         }
 
@@ -106,7 +107,6 @@ final public class OsgiBundleVerifier {
 
         return builder.toString();
     }
-
 
     private static String removeQualifier(String version) {
         int idx = version.indexOf('-');

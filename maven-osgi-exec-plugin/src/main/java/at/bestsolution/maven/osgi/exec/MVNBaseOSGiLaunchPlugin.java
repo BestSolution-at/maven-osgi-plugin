@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,6 +41,10 @@ import org.codehaus.plexus.logging.Logger;
 import at.bestsolution.maven.osgi.support.OsgiBundleVerifier;
 
 public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
+	public enum Mode {
+		CONFIGURE, START, RESTART
+	}
+
 	protected static final String OSGI_FRAMEWORK_EXTENSIONS = "osgi.framework.extensions";
 
 	private static final String LF = System.getProperty("line.separator");
@@ -61,6 +66,9 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 
 	@Parameter(defaultValue = "${project.build.finalName}")
 	private String filename;
+
+	@Parameter(property = "exec.mode", defaultValue = "START")
+	protected Mode mode;
 
 	@Parameter
 	private boolean debug;
@@ -90,16 +98,14 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 	}
 
 	protected Path generateConfigIni(MavenProject project, Set<Path> extensionPaths) {
-		Set<Bundle> bundles = project.getArtifacts().stream().map(this::map).filter(Optional::isPresent)
+		Set<Artifact> artifacts = new HashSet<>(project.getArtifacts());
+		if (project.getPackaging().equals("jar")) {
+			artifacts.add(project.getArtifact());
+		}
+		Set<Bundle> bundles = artifacts.stream().map(this::map).filter(Optional::isPresent)
 				.map(Optional::get).collect(Collectors.toSet());
 
-		if (project.getPackaging().equals("jar")) {
-			Path binary = project.getArtifact().getFile().toPath();
-			bundles.add(new Bundle(getOsgiVerifier().getManifest(project.getArtifact()).get(), binary));
-		}
-
-		Path p = Paths.get(System.getProperty("java.io.tmpdir"))
-				.resolve(project.getGroupId() + "-" + project.getArtifactId()).resolve(project.getArtifactId())
+		Path p = Paths.get(project.getBuild().getDirectory()).resolve(project.getArtifactId())
 				.resolve("configuration");
 
 		Optional<Bundle> simpleConfigurator = bundles.stream()

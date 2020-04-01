@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>test</groupId>
+	<artifactId>exec-osgi</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.platform</groupId>
+			<artifactId>org.eclipse.osgi</artifactId>
+			<version>3.15.100</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.platform</groupId>
+			<artifactId>org.eclipse.equinox.simpleconfigurator</artifactId>
+			<version>1.3.300</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.platform</groupId>
+			<artifactId>org.eclipse.equinox.launcher</artifactId>
+			<version>1.5.500</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>at.bestsolution</groupId>
+				<artifactId>maven-osgi-exec-plugin</artifactId>
+				<version>0.0.2-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>exec-osgi</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<programArguments>
+						<programArgument>-consoleLog</programArgument>
+						<programArgument>-clearPersistedState</programArgument>
+						<programArgument>-clean</programArgument>
+					</programArguments>
+					<vmProperties>
+						<eclipse.ignoreApp>true</eclipse.ignoreApp>
+					</vmProperties>
+					<startLevels>
+						<org.eclipse.core.runtime>0</org.eclipse.core.runtime>
+						<org.apache.felix.scr>2</org.apache.felix.scr>
+						<org.eclipse.equinox.event>2</org.eclipse.equinox.event>
+						<org.eclipse.equinox.simpleconfigurator>1</org.eclipse.equinox.simpleconfigurator>
+						<org.eclipse.osgi>-1</org.eclipse.osgi>
+					</startLevels>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
