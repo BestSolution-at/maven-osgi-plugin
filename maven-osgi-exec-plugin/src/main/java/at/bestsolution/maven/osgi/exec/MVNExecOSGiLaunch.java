@@ -12,6 +12,8 @@ package at.bestsolution.maven.osgi.exec;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,19 +25,19 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.exec.util.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.shared.utils.cli.CommandLineUtils;
-import org.codehaus.plexus.logging.Logger;
 
 import com.google.common.base.Strings;
 
@@ -55,43 +57,71 @@ public class MVNExecOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		Set<Path> extensionPaths = new HashSet<>();
-		Path ini = generateConfigIni(project, extensionPaths);
-		
-		Optional<File> launcherJar = project.getArtifacts().stream()
-				.filter(a -> "org.eclipse.equinox.launcher".equals(a.getArtifactId())).findFirst()
-				.map(a -> {
-						return a.getFile();
-				});
-		
-		String argsProp = System.getProperty("exec.args");
+		CommandLine baseCommandLine;
+		Path commandFile = new File(project.getBuild().getDirectory(), "command").toPath();
+		if (mode == Mode.restart) {
+			try {
+				// read the base command line from file
+				List<String> lines = Files.readAllLines(commandFile, Charset.forName("UTF-8"));
+				baseCommandLine = CommandLine.parse(lines.iterator().next());
+			} catch (IOException e) {
+				throw new MojoExecutionException("Unable to read command file", e);
+			}
+		} else {
+			// create an Equinox configuration and a base command line
+			Set<Path> extensionPaths = new HashSet<>();
+			Path ini = generateConfigIni(project, extensionPaths);
 
-		List<String> commandArguments = new ArrayList<>();
-		commandArguments.addAll(vmProperties.entrySet().stream().map( e -> "-D" + e.getKey()+"="+e.getValue()).collect(Collectors.toList()));
-		if( vmProperties.containsKey(OSGI_FRAMEWORK_EXTENSIONS) ) {
-			String extensionClasspath = extensionPaths.stream().map(Path::toString).collect(Collectors.joining(",","file:",""));
-			if( ! extensionClasspath.trim().isEmpty() ) {
-				commandArguments.add("-Dosgi.frameworkClassPath=.," + extensionClasspath);
+			Optional<File> launcherJar = project.getArtifacts().stream()
+					.filter(a -> "org.eclipse.equinox.launcher".equals(a.getArtifactId())).findFirst()
+					.map(a -> {
+							return a.getFile();
+					});
+
+			List<String> commandArguments = new ArrayList<>();
+			commandArguments.addAll(vmProperties.entrySet().stream().map( e -> "-D" + e.getKey()+"="+e.getValue()).collect(Collectors.toList()));
+			if( vmProperties.containsKey(OSGI_FRAMEWORK_EXTENSIONS) ) {
+				String extensionClasspath = extensionPaths.stream().map(Path::toString).collect(Collectors.joining(",","file:",""));
+				if( ! extensionClasspath.trim().isEmpty() ) {
+					commandArguments.add("-Dosgi.frameworkClassPath=.," + extensionClasspath);
+				}
+			}
+			commandArguments.add("-jar");
+			commandArguments.add(launcherJar.get().toPath().toAbsolutePath().toString());
+
+			commandArguments.add("-configuration");
+			commandArguments.add("file:" + ini.toString());
+
+			baseCommandLine = new CommandLine(System.getProperty("java.home") + "/bin/java");
+			baseCommandLine.addArguments(commandArguments.toArray(new String[commandArguments.size()]), false);
+
+			String commandLineStr = StringUtils.toString(Stream.of(baseCommandLine.toStrings()).map(arg -> StringUtils.quoteArgument(arg)).toArray(String[]::new), " ");
+			try {
+				Files.write(commandFile, Arrays.asList(commandLineStr), Charset.forName("UTF-8"));
+			} catch (IOException e) {
+				throw new MojoExecutionException("Unable to write command file", e);
 			}
 		}
-		if (!Strings.isNullOrEmpty(argsProp)) {
-			handleSystemPropertyArguments(argsProp, commandArguments);
+
+		if (mode == Mode.configure) {
+			// don't start anything in configure mode
+			return;
 		}
-		commandArguments.add("-jar");
-		commandArguments.add(launcherJar.get().toPath().toAbsolutePath().toString());
-				
-		commandArguments.add("-configuration");
-		commandArguments.add("file:" + ini.toString());
+
+		CommandLine commandLine = new CommandLine(baseCommandLine.getExecutable());
+		List<String> commandArguments = new ArrayList<>(Arrays.asList(baseCommandLine.getArguments()));
+		// add exec.args if supplied via -Dexec.args
+		String execArgs = System.getProperty("exec.args");
+		if (!Strings.isNullOrEmpty(execArgs)) {
+			commandArguments.addAll(commandArguments.indexOf("-jar"), parseSystemPropertyArguments(execArgs));
+		}
+		// add program parameters
 		commandArguments.addAll(programArguments);
+
+		commandLine.addArguments(commandArguments.toArray(new String[commandArguments.size()]), false);
 
 		Map<String, String> enviro = handleSystemEnvVariables();
 
-		CommandLine commandLine = new CommandLine( System.getProperty("java.home") + "/bin/java");
-
-		String[] args = commandArguments.toArray(new String[commandArguments.size()]);
-
-		commandLine.addArguments(args, false);
-		
 		Executor exec = new DefaultExecutor();
 		exec.setWorkingDirectory(workingDirectory);
 
@@ -101,10 +131,8 @@ public class MVNExecOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 
 		try {
 			exec.execute(commandLine, enviro);
-
 		} catch (IOException e) {
 			logger.error("Error on executing commandline: " + commandLine, e);
-
 		} finally {
 			try {
 				psh.stop();
@@ -114,11 +142,10 @@ public class MVNExecOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 		}
 	}
 
-	private void handleSystemPropertyArguments(String argsProp, List<String> commandArguments)
+	private List<String> parseSystemPropertyArguments(String argsProp)
 			throws MojoExecutionException {
 		try {
-			String[] args = CommandLineUtils.translateCommandline(argsProp);
-			commandArguments.addAll(Arrays.asList(args));
+			return Arrays.asList(CommandLineUtils.translateCommandline(argsProp));
 		} catch (Exception e) {
 			throw new MojoExecutionException("Couldn't parse systemproperty 'exec.args'");
 		}

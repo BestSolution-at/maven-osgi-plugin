@@ -18,7 +18,6 @@ import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -27,13 +26,11 @@ import java.util.stream.Collectors;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.shared.utils.cli.CommandLineException;
 import org.apache.maven.shared.utils.cli.CommandLineUtils;
-import org.codehaus.plexus.logging.Logger;
 
 @Mojo(name="exec-osgi-java", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class MVNJavaOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
@@ -51,7 +48,7 @@ public class MVNJavaOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 				.filter(a -> "org.eclipse.equinox.launcher".equals(a.getArtifactId())).findFirst()
 				.map(a -> {
 					try {
-						return a.getFile().toURL();
+						return a.getFile().toURI().toURL();
 					} catch (MalformedURLException e) {
 						throw new RuntimeException(e);
 					}
