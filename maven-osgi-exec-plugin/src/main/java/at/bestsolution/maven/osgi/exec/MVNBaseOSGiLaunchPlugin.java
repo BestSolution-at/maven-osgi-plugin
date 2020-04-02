@@ -42,7 +42,7 @@ import at.bestsolution.maven.osgi.support.OsgiBundleVerifier;
 
 public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 	public enum Mode {
-		CONFIGURE, START, RESTART
+		configure, start, restart
 	}
 
 	protected static final String OSGI_FRAMEWORK_EXTENSIONS = "osgi.framework.extensions";

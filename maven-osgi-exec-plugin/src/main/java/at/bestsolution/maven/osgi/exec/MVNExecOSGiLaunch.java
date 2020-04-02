@@ -59,7 +59,7 @@ public class MVNExecOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		CommandLine baseCommandLine;
 		Path commandFile = new File(project.getBuild().getDirectory(), "command").toPath();
-		if (mode == Mode.RESTART) {
+		if (mode == Mode.restart) {
 			try {
 				// read the base command line from file
 				List<String> lines = Files.readAllLines(commandFile, Charset.forName("UTF-8"));
@@ -103,7 +103,7 @@ public class MVNExecOSGiLaunch extends MVNBaseOSGiLaunchPlugin {
 			}
 		}
 
-		if (mode == Mode.CONFIGURE) {
+		if (mode == Mode.configure) {
 			// don't start anything in configure mode
 			return;
 		}

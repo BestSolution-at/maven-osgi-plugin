@@ -22,7 +22,7 @@ public class MVNExecOSGITest extends TestCase {
 		verifier.assertFilePresent("command");
 		
 		verifier.setAutoclean(false);
-		verifier.setSystemProperty("exec.mode", "RESTART");
+		verifier.setSystemProperty("exec.mode", "restart");
 		verifier.executeGoal("test");
 		verifier.verifyErrorFreeLog();
 	}
