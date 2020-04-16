@@ -32,7 +32,7 @@
 			<plugin>
 				<groupId>at.bestsolution</groupId>
 				<artifactId>maven-osgi-exec-plugin</artifactId>
-				<version>0.0.2-SNAPSHOT</version>
+				<version>0.0.2</version>
 				<executions>
 					<execution>
 						<phase>test</phase>
