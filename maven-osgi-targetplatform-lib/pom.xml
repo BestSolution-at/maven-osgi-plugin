@@ -4,13 +4,13 @@
 
 	<groupId>at.bestsolution</groupId>
 	<artifactId>maven-osgi-targetplatform-lib</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	
 	<parent>
 		<groupId>at.bestsolution</groupId>
 		<artifactId>maven-osgi-modules</artifactId>
-		<version>0.0.2</version>
+		<version>0.0.3-SNAPSHOT</version>
 	</parent>
 
 	<name>Maven OSGi Target Platform Library</name>
