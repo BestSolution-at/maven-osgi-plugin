@@ -67,7 +67,7 @@ public abstract class MVNBaseOSGiLaunchPlugin extends AbstractMojo {
 	@Parameter(defaultValue = "${project.build.finalName}")
 	private String filename;
 
-	@Parameter(property = "exec.mode", defaultValue = "START")
+	@Parameter(property = "exec.mode", defaultValue = "start")
 	protected Mode mode;
 
 	@Parameter
