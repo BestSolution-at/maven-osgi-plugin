@@ -22,7 +22,7 @@
 		<mavenVersion>3.5.0</mavenVersion>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<hamcrest.version>2.0.0.0</hamcrest.version>
 		<mockito.core.version>2.7.22</mockito.core.version>
 	</properties>
