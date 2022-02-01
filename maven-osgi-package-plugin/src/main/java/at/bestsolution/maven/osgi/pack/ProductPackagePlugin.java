@@ -69,12 +69,13 @@ public class ProductPackagePlugin extends AbstractMojo {
         Xpp3Dom programArgs = new Xpp3Dom("programArgs");
         programArgs.setValue(product.launcherArgs.programArguments.stream().collect(Collectors.joining(" ")));
         launcherArgs.addChild(programArgs);
-
+        
         Xpp3Dom vmArgs = new Xpp3Dom("vmArgs");
         vmArgs.setValue(
-        	product.launcherArgs.vmProperties.entrySet().stream()
-        		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
-        		.collect(Collectors.joining(" ")));
+    		product.launcherArgs.vmOptions.stream().collect(Collectors.joining(" "))
+        		+ product.launcherArgs.vmProperties.entrySet().stream()
+					.map( e -> "-D" + e.getKey() + "=" + e.getValue())
+					.collect(Collectors.joining(" ")));
         launcherArgs.addChild(vmArgs);
 
         xppProduct.addChild(launcherArgs);
