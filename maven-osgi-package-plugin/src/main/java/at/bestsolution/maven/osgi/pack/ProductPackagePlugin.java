@@ -66,17 +66,76 @@ public class ProductPackagePlugin extends AbstractMojo {
         xppProduct.addChild(configIni);
 
         Xpp3Dom launcherArgs = new Xpp3Dom("launcherArgs");
-        Xpp3Dom programArgs = new Xpp3Dom("programArgs");
-        programArgs.setValue(product.launcherArgs.programArguments.stream().collect(Collectors.joining(" ")));
-        launcherArgs.addChild(programArgs);
+                
+        if( product.launcherArgs != null ) {
+        	if(product.launcherArgs.programArguments != null) {
+                Xpp3Dom programArgs = new Xpp3Dom("programArgs");
+                programArgs.setValue(product.launcherArgs.programArguments.stream().collect(Collectors.joining(" ")));
+                launcherArgs.addChild(programArgs);
+        	}
+        	
+        	if( product.launcherArgs.vmProperties != null ) {
+            	Xpp3Dom vmArgs = new Xpp3Dom("vmArgs");
+                vmArgs.setValue(
+            		product.launcherArgs.vmOptions.stream().collect(Collectors.joining(" "))
+	            		+ product.launcherArgs.vmProperties.entrySet().stream()
+	                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
+	                		.collect(Collectors.joining(" ")));
+                launcherArgs.addChild(vmArgs);        		
+        	}
+        }
         
-        Xpp3Dom vmArgs = new Xpp3Dom("vmArgs");
-        vmArgs.setValue(
-    		product.launcherArgs.vmOptions.stream().collect(Collectors.joining(" "))
-        		+ product.launcherArgs.vmProperties.entrySet().stream()
-					.map( e -> "-D" + e.getKey() + "=" + e.getValue())
-					.collect(Collectors.joining(" ")));
-        launcherArgs.addChild(vmArgs);
+        
+        if( product.launcherArgsWin != null ) {
+        	if( product.launcherArgsWin.programArguments != null && ! product.launcherArgsWin.programArguments.isEmpty() ) {
+        		Xpp3Dom programArgPlatform = new Xpp3Dom("programArgsWin");
+        		programArgPlatform.setValue(product.launcherArgsWin.programArguments.stream().collect(Collectors.joining(" ")));
+            	launcherArgs.addChild(programArgPlatform);	
+        	}
+        	if( product.launcherArgsWin.vmProperties != null && ! product.launcherArgsWin.vmProperties.entrySet().isEmpty() ) {
+        		Xpp3Dom vmArgsPlatform = new Xpp3Dom("vmArgsWin");
+        		vmArgsPlatform.setValue(
+            		product.launcherArgsWin.vmOptions.stream().collect(Collectors.joining(" "))
+	            		+ product.launcherArgsWin.vmProperties.entrySet().stream()
+	                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
+	                		.collect(Collectors.joining(" ")));
+                launcherArgs.addChild(vmArgsPlatform);
+        	}
+        }
+        
+        if( product.launcherArgsOSX != null ) {
+        	if( product.launcherArgsOSX.programArguments != null && ! product.launcherArgsOSX.programArguments.isEmpty() ) {
+            	Xpp3Dom programArgPlatform = new Xpp3Dom("programArgsMac");
+            	programArgPlatform.setValue(product.launcherArgsOSX.programArguments.stream().collect(Collectors.joining(" ")));
+            	launcherArgs.addChild(programArgPlatform);        		
+        	}
+        	if( product.launcherArgsOSX.vmProperties != null && ! product.launcherArgsOSX.vmProperties.entrySet().isEmpty() ) {
+        		Xpp3Dom vmArgsPlatform = new Xpp3Dom("vmArgsMac");
+        		vmArgsPlatform.setValue(
+            		product.launcherArgsOSX.vmOptions.stream().collect(Collectors.joining(" "))
+	            		+ product.launcherArgsOSX.vmProperties.entrySet().stream()
+	                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
+	                		.collect(Collectors.joining(" ")));
+                launcherArgs.addChild(vmArgsPlatform);
+        	}
+        }
+        
+        if( product.launcherArgsLinux != null ) {
+        	if( product.launcherArgsLinux.programArguments != null && ! product.launcherArgsLinux.programArguments.isEmpty() ) {
+            	Xpp3Dom programArgPlatform = new Xpp3Dom("programArgsLin");
+            	programArgPlatform.setValue(product.launcherArgsLinux.programArguments.stream().collect(Collectors.joining(" ")));
+            	launcherArgs.addChild(programArgPlatform);        		
+        	}
+        	if( product.launcherArgsLinux.vmProperties != null && ! product.launcherArgsLinux.vmProperties.entrySet().isEmpty() ) {
+        		Xpp3Dom vmArgsPlatform = new Xpp3Dom("vmArgsLin");
+        		vmArgsPlatform.setValue(
+            		product.launcherArgsLinux.vmOptions.stream().collect(Collectors.joining(" "))
+	            		+ product.launcherArgsLinux.vmProperties.entrySet().stream()
+	                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
+	                		.collect(Collectors.joining(" ")));
+                launcherArgs.addChild(vmArgsPlatform);
+        	}
+        }
 
         xppProduct.addChild(launcherArgs);
         
