@@ -20,9 +20,9 @@
 		<module>maven-osgi-exec-plugin-tests</module>
 		<module>maven-osgi-package-plugin</module>
 		<module>tycho-lifecycle-controller</module>
-		<module>maven-osgi-targetplatform-lib</module>
+		<!-- module>maven-osgi-targetplatform-lib</module>
 		<module>maven-osgi-targetplatform-extension</module>
-		<module>maven-osgi-targetplatform-plugin</module>
+		<module>maven-osgi-targetplatform-plugin</module -->
 	</modules>
 
 
@@ -31,12 +31,12 @@
 			<id>deploy-bestsolution</id>
 			<distributionManagement>
 				<repository>
-					<id>efxclipse-releases</id>
-					<url>http://rattenschwanz.bestsolution.at:8081/nexus/content/repositories/efxclipse-releases</url>
+					<id>oss-releases</id>
+					<url>https://maven.bestsolution.at/deploy/releases/</url>
 				</repository>
 				<snapshotRepository>
-					<id>efxclipse-snapshots</id>
-					<url>http://rattenschwanz.bestsolution.at:8081/nexus/content/repositories/efxclipse-snapshots</url>
+					<id>oss-snapshots</id>
+					<url>https://maven.bestsolution.at/deploy/snapshots/</url>
 				</snapshotRepository>
 			</distributionManagement>
 			<build>

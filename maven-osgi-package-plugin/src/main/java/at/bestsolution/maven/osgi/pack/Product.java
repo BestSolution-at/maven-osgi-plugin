@@ -21,6 +21,9 @@ public class Product {
 	public boolean useFeatures;
 	public boolean includeLaunchers;
 	public LauncherArgs launcherArgs;
+	public LauncherArgs launcherArgsWin;
+	public LauncherArgs launcherArgsLinux;
+	public LauncherArgs launcherArgsOSX;
 	public Launcher launcher;
 	public String splashLocation;
 	protected Map<String, Integer> startLevels;
