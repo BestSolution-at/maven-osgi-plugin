@@ -66,10 +66,12 @@ public class FeaturePackagePlugin extends AbstractMojo {
 
 	/** constant string for the recoginized maven artifact classfier to support multiplatform feature bundles */
 	private static final String CLASSIFIER_MAC = "mac";
+	private static final String CLASSIFIER_MAC_AARCH64 = "mac_aarch64";
 	private static final String CLASSIFIER_WIN32 = "win32";
 	private static final String CLASSIFIER_X64 = "x64";
 	private static final String CLASSIFIER_WIN_64 = "win32_64";
 	private static final String CLASSIFIER_LINUX_64 = "linux_64";
+	private static final String CLASSIFIER_LINUX_AARCH64 = "linux_aarch64";
 
 
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
@@ -191,6 +193,11 @@ public class FeaturePackagePlugin extends AbstractMojo {
 			childNode.setAttribute("ws", "cocoa");
 			childNode.setAttribute("arch", "x86_64");
 
+		} else if (CLASSIFIER_MAC_AARCH64.equalsIgnoreCase(artifact.getClassifier())) {
+			childNode.setAttribute("os", "macosx");
+			childNode.setAttribute("ws", "cocoa");
+			childNode.setAttribute("arch", "aarch64");
+
 		} else if (CLASSIFIER_WIN32.equalsIgnoreCase(artifact.getClassifier())) {
 			childNode.setAttribute("os", "win32");
 			childNode.setAttribute("ws", "win32");
@@ -206,15 +213,22 @@ public class FeaturePackagePlugin extends AbstractMojo {
 			childNode.setAttribute("ws", "gtk");
 			childNode.setAttribute("arch", "x86_64");
 			
-		} else if( mm.getMainAttributes().getValue("Eclipse-PlatformFilter") != null ) {
+		} else if( CLASSIFIER_LINUX_AARCH64.equalsIgnoreCase(artifact.getClassifier()) ) {
+			childNode.setAttribute("os", "linux");
+			childNode.setAttribute("ws", "gtk");
+			childNode.setAttribute("arch", "aarch64");
+			
+		}else if( mm.getMainAttributes().getValue("Eclipse-PlatformFilter") != null ) {
 			try {
 				Filter filter = FrameworkUtil.createFilter(mm.getMainAttributes().getValue("Eclipse-PlatformFilter"));
 				String[][] filterTypes = {
 						{ "win32", "win32", "x86_64" },
 						{ "win32", "win32", "x86" },
 						{ "macosx", "cocoa", "x86_64" },
+						{ "macosx", "cocoa", "aarch64" },
 						{ "linux", "gtk", "x86" },
-						{ "linux", "gtk", "x86_64" }
+						{ "linux", "gtk", "x86_64" },
+						{ "linux", "gtk", "aarch64" }
 				};
 				for( String[] filterType : filterTypes ) {
 					if( filter.matches(createMap(filterType[0], filterType[1], filterType[2])) ) {
