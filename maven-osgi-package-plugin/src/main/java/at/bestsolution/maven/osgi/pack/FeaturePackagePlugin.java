@@ -201,7 +201,7 @@ public class FeaturePackagePlugin extends AbstractMojo {
 		} else if (CLASSIFIER_WIN32.equalsIgnoreCase(artifact.getClassifier())) {
 			childNode.setAttribute("os", "win32");
 			childNode.setAttribute("ws", "win32");
-			childNode.setAttribute("arch", "x86");
+			childNode.setAttribute("arch", "x86_64");
 
 		} else if (CLASSIFIER_X64.equalsIgnoreCase(artifact.getClassifier()) || CLASSIFIER_WIN_64.equalsIgnoreCase(artifact.getClassifier())) {
 			childNode.setAttribute("os", "win32");
