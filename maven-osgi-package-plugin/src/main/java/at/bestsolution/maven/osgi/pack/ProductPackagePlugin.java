@@ -77,9 +77,10 @@ public class ProductPackagePlugin extends AbstractMojo {
         	if( product.launcherArgs.vmProperties != null ) {
             	Xpp3Dom vmArgs = new Xpp3Dom("vmArgs");
                 vmArgs.setValue(
-                	product.launcherArgs.vmProperties.entrySet().stream()
-                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
-                		.collect(Collectors.joining(" ")));
+            		product.launcherArgs.vmOptions.stream().collect(Collectors.joining(" "))
+	            		+ product.launcherArgs.vmProperties.entrySet().stream()
+	                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
+	                		.collect(Collectors.joining(" ")));
                 launcherArgs.addChild(vmArgs);        		
         	}
         }
@@ -94,9 +95,10 @@ public class ProductPackagePlugin extends AbstractMojo {
         	if( product.launcherArgsWin.vmProperties != null && ! product.launcherArgsWin.vmProperties.entrySet().isEmpty() ) {
         		Xpp3Dom vmArgsPlatform = new Xpp3Dom("vmArgsWin");
         		vmArgsPlatform.setValue(
-                	product.launcherArgsWin.vmProperties.entrySet().stream()
-                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
-                		.collect(Collectors.joining(" ")));
+            		product.launcherArgsWin.vmOptions.stream().collect(Collectors.joining(" "))
+	            		+ product.launcherArgsWin.vmProperties.entrySet().stream()
+	                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
+	                		.collect(Collectors.joining(" ")));
                 launcherArgs.addChild(vmArgsPlatform);
         	}
         }
@@ -110,9 +112,10 @@ public class ProductPackagePlugin extends AbstractMojo {
         	if( product.launcherArgsOSX.vmProperties != null && ! product.launcherArgsOSX.vmProperties.entrySet().isEmpty() ) {
         		Xpp3Dom vmArgsPlatform = new Xpp3Dom("vmArgsMac");
         		vmArgsPlatform.setValue(
-                	product.launcherArgsOSX.vmProperties.entrySet().stream()
-                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
-                		.collect(Collectors.joining(" ")));
+            		product.launcherArgsOSX.vmOptions.stream().collect(Collectors.joining(" "))
+	            		+ product.launcherArgsOSX.vmProperties.entrySet().stream()
+	                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
+	                		.collect(Collectors.joining(" ")));
                 launcherArgs.addChild(vmArgsPlatform);
         	}
         }
@@ -126,9 +129,10 @@ public class ProductPackagePlugin extends AbstractMojo {
         	if( product.launcherArgsLinux.vmProperties != null && ! product.launcherArgsLinux.vmProperties.entrySet().isEmpty() ) {
         		Xpp3Dom vmArgsPlatform = new Xpp3Dom("vmArgsLin");
         		vmArgsPlatform.setValue(
-                	product.launcherArgsLinux.vmProperties.entrySet().stream()
-                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
-                		.collect(Collectors.joining(" ")));
+            		product.launcherArgsLinux.vmOptions.stream().collect(Collectors.joining(" "))
+	            		+ product.launcherArgsLinux.vmProperties.entrySet().stream()
+	                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
+	                		.collect(Collectors.joining(" ")));
                 launcherArgs.addChild(vmArgsPlatform);
         	}
         }
