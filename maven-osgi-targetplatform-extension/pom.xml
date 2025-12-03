@@ -2,15 +2,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>at.bestsolution</groupId>
-	<artifactId>maven-osgi-targetplatform-extension</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<artifactId>equinox-targetplatform-maven-extension</artifactId>
 	<packaging>jar</packaging>
 	
 	<parent>
 		<groupId>at.bestsolution</groupId>
 		<artifactId>maven-osgi-modules</artifactId>
-		<version>0.0.3-SNAPSHOT</version>
+		<version>0.0.4-SNAPSHOT</version>
 	</parent>
 
 	<name>Maven OSGi Target Platform Extension</name>
@@ -20,8 +18,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<mavenVersion>3.5.0</mavenVersion>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 	</properties>
 
 
@@ -73,7 +71,7 @@
 			<plugin>
 				<groupId>org.codehaus.plexus</groupId>
 				<artifactId>plexus-component-metadata</artifactId>
-				<version>1.7.1</version>
+				<version>2.1.1</version>
 				<executions>
 					<execution>
 						<goals>
@@ -88,8 +86,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>17</source>
+					<target>17</target>
 				</configuration>
 			</plugin>
 		</plugins>
