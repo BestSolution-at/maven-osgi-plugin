@@ -27,7 +27,7 @@
 
 		<dependency>
 			<groupId>at.bestsolution</groupId>
-			<artifactId>maven-osgi-targetplatform-lib</artifactId>
+			<artifactId>equinox-targetplatform-maven-lib</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

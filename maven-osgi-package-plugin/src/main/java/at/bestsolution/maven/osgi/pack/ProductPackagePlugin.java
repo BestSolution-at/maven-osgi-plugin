@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -72,18 +73,27 @@ public class ProductPackagePlugin extends AbstractMojo {
                 Xpp3Dom programArgs = new Xpp3Dom("programArgs");
                 programArgs.setValue(product.launcherArgs.programArguments.stream().collect(Collectors.joining(" ")));
                 launcherArgs.addChild(programArgs);
-        	}
-        	
-        	if( product.launcherArgs.vmProperties != null ) {
-            	Xpp3Dom vmArgs = new Xpp3Dom("vmArgs");
-                vmArgs.setValue(
-                	product.launcherArgs.vmProperties.entrySet().stream()
-                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
-                		.collect(Collectors.joining(" ")));
-                launcherArgs.addChild(vmArgs);        		
-        	}
+            }
+
+            if( product.launcherArgs.vmProperties != null || product.launcherArgs.jvmModulOptions != null ) {
+                Xpp3Dom vmArgs = new Xpp3Dom( "vmArgs" );
+                String vmOptions = "";
+                if( product.launcherArgs.vmProperties != null ) {
+                    vmOptions = product.launcherArgs.vmProperties.entrySet().stream()
+                            .map( e -> "-D" + e.getKey() + "=" + e.getValue() )
+                            .collect( Collectors.joining( " " ) );
+                }
+
+                String jvmOptions = "";
+                if( product.launcherArgs.jvmModulOptions != null ) {
+                    jvmOptions = product.launcherArgs.jvmModulOptions.entrySet().stream()
+                            .map( e -> "--" + e.getKey() + "=" + e.getValue() )
+                            .collect( Collectors.joining( " " ) );
+                }
+                vmArgs.setValue( String.join( " ", vmOptions, jvmOptions ) );
+                launcherArgs.addChild( vmArgs );
+            }
         }
-        
         
         if( product.launcherArgsWin != null ) {
         	if( product.launcherArgsWin.programArguments != null && ! product.launcherArgsWin.programArguments.isEmpty() ) {
@@ -91,14 +101,25 @@ public class ProductPackagePlugin extends AbstractMojo {
         		programArgPlatform.setValue(product.launcherArgsWin.programArguments.stream().collect(Collectors.joining(" ")));
             	launcherArgs.addChild(programArgPlatform);	
         	}
-        	if( product.launcherArgsWin.vmProperties != null && ! product.launcherArgsWin.vmProperties.entrySet().isEmpty() ) {
-        		Xpp3Dom vmArgsPlatform = new Xpp3Dom("vmArgsWin");
-        		vmArgsPlatform.setValue(
-                	product.launcherArgsWin.vmProperties.entrySet().stream()
-                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
-                		.collect(Collectors.joining(" ")));
-                launcherArgs.addChild(vmArgsPlatform);
-        	}
+
+            if( product.launcherArgsWin.vmProperties != null || product.launcherArgsWin.jvmModulOptions != null ) {
+                Xpp3Dom vmArgsPlatform = new Xpp3Dom( "vmArgsWin" );
+                String vmOptions = "";
+                if( product.launcherArgsWin.vmProperties != null ) {
+                    vmOptions = product.launcherArgsWin.vmProperties.entrySet().stream()
+                            .map( e -> "-D" + e.getKey() + "=" + e.getValue() )
+                            .collect( Collectors.joining( " " ) );
+                }
+
+                String jvmOptions = "";
+                if( product.launcherArgsWin.jvmModulOptions != null ) {
+                    jvmOptions = product.launcherArgsWin.jvmModulOptions.entrySet().stream()
+                            .map( e -> "--" + e.getKey() + "=" + e.getValue() )
+                            .collect( Collectors.joining( " " ) );
+                }
+                vmArgsPlatform.setValue( String.join( " ", vmOptions, jvmOptions ) );
+                launcherArgs.addChild( vmArgsPlatform );
+            }
         }
         
         if( product.launcherArgsOSX != null ) {
@@ -107,14 +128,26 @@ public class ProductPackagePlugin extends AbstractMojo {
             	programArgPlatform.setValue(product.launcherArgsOSX.programArguments.stream().collect(Collectors.joining(" ")));
             	launcherArgs.addChild(programArgPlatform);        		
         	}
-        	if( product.launcherArgsOSX.vmProperties != null && ! product.launcherArgsOSX.vmProperties.entrySet().isEmpty() ) {
-        		Xpp3Dom vmArgsPlatform = new Xpp3Dom("vmArgsMac");
-        		vmArgsPlatform.setValue(
-                	product.launcherArgsOSX.vmProperties.entrySet().stream()
-                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
-                		.collect(Collectors.joining(" ")));
-                launcherArgs.addChild(vmArgsPlatform);
-        	}
+
+            if( product.launcherArgsOSX.vmProperties != null || product.launcherArgsOSX.jvmModulOptions != null ) {
+                Xpp3Dom vmArgsPlatform = new Xpp3Dom( "vmArgsMac" );
+                String vmOptions = "";
+                if( product.launcherArgsOSX.vmProperties != null ) {
+                    vmOptions = product.launcherArgsOSX.vmProperties.entrySet().stream()
+                            .map( e -> "-D" + e.getKey() + "=" + e.getValue() )
+                            .collect( Collectors.joining( " " ) );
+                }
+
+                String jvmOptions = "";
+                if( product.launcherArgsOSX.jvmModulOptions != null ) {
+                    jvmOptions = product.launcherArgsOSX.jvmModulOptions.entrySet().stream()
+                            .map( e -> "--" + e.getKey() + "=" + e.getValue() )
+                            .collect( Collectors.joining( " " ) );
+                }
+                vmArgsPlatform.setValue( String.join( " ", vmOptions, jvmOptions ) );
+                launcherArgs.addChild( vmArgsPlatform );
+            }
+
         }
         
         if( product.launcherArgsLinux != null ) {
@@ -123,14 +156,25 @@ public class ProductPackagePlugin extends AbstractMojo {
             	programArgPlatform.setValue(product.launcherArgsLinux.programArguments.stream().collect(Collectors.joining(" ")));
             	launcherArgs.addChild(programArgPlatform);        		
         	}
-        	if( product.launcherArgsLinux.vmProperties != null && ! product.launcherArgsLinux.vmProperties.entrySet().isEmpty() ) {
-        		Xpp3Dom vmArgsPlatform = new Xpp3Dom("vmArgsLin");
-        		vmArgsPlatform.setValue(
-                	product.launcherArgsLinux.vmProperties.entrySet().stream()
-                		.map( e -> "-D" + e.getKey() + "=" + e.getValue())
-                		.collect(Collectors.joining(" ")));
-                launcherArgs.addChild(vmArgsPlatform);
-        	}
+
+            if( product.launcherArgsLinux.vmProperties != null || product.launcherArgsLinux.jvmModulOptions != null ) {
+                Xpp3Dom vmArgsPlatform = new Xpp3Dom( "vmArgsLin" );
+                String vmOptions = "";
+                if( product.launcherArgsLinux.vmProperties != null ) {
+                    vmOptions = product.launcherArgsLinux.vmProperties.entrySet().stream()
+                            .map( e -> "-D" + e.getKey() + "=" + e.getValue() )
+                            .collect( Collectors.joining( " " ) );
+                }
+
+                String jvmOptions = "";
+                if( product.launcherArgsLinux.jvmModulOptions != null ) {
+                    jvmOptions = product.launcherArgsLinux.jvmModulOptions.entrySet().stream()
+                            .map( e -> "--" + e.getKey() + "=" + e.getValue() )
+                            .collect( Collectors.joining( " " ) );
+                }
+                vmArgsPlatform.setValue( String.join( " ", vmOptions, jvmOptions ) );
+                launcherArgs.addChild( vmArgsPlatform );
+            }
         }
 
         xppProduct.addChild(launcherArgs);
