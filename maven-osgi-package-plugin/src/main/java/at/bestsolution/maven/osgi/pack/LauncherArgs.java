@@ -16,6 +16,6 @@ import java.util.Properties;
 public class LauncherArgs {
 	public List<String> programArguments;
 	public Properties vmProperties;
-    public Properties jvmModulOptions;
+    public List<String> jvmModulOptions;
 	
 }

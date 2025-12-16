@@ -86,8 +86,7 @@ public class ProductPackagePlugin extends AbstractMojo {
 
                 String jvmOptions = "";
                 if( product.launcherArgs.jvmModulOptions != null ) {
-                    jvmOptions = product.launcherArgs.jvmModulOptions.entrySet().stream()
-                            .map( e -> "--" + e.getKey() + "=" + e.getValue() )
+                    jvmOptions = product.launcherArgs.jvmModulOptions.stream()
                             .collect( Collectors.joining( " " ) );
                 }
                 vmArgs.setValue( String.join( " ", vmOptions, jvmOptions ) );
@@ -113,8 +112,7 @@ public class ProductPackagePlugin extends AbstractMojo {
 
                 String jvmOptions = "";
                 if( product.launcherArgsWin.jvmModulOptions != null ) {
-                    jvmOptions = product.launcherArgsWin.jvmModulOptions.entrySet().stream()
-                            .map( e -> "--" + e.getKey() + "=" + e.getValue() )
+                    jvmOptions = product.launcherArgsWin.jvmModulOptions.stream()
                             .collect( Collectors.joining( " " ) );
                 }
                 vmArgsPlatform.setValue( String.join( " ", vmOptions, jvmOptions ) );
@@ -140,8 +138,7 @@ public class ProductPackagePlugin extends AbstractMojo {
 
                 String jvmOptions = "";
                 if( product.launcherArgsOSX.jvmModulOptions != null ) {
-                    jvmOptions = product.launcherArgsOSX.jvmModulOptions.entrySet().stream()
-                            .map( e -> "--" + e.getKey() + "=" + e.getValue() )
+                    jvmOptions = product.launcherArgsOSX.jvmModulOptions.stream()
                             .collect( Collectors.joining( " " ) );
                 }
                 vmArgsPlatform.setValue( String.join( " ", vmOptions, jvmOptions ) );
@@ -168,8 +165,7 @@ public class ProductPackagePlugin extends AbstractMojo {
 
                 String jvmOptions = "";
                 if( product.launcherArgsLinux.jvmModulOptions != null ) {
-                    jvmOptions = product.launcherArgsLinux.jvmModulOptions.entrySet().stream()
-                            .map( e -> "--" + e.getKey() + "=" + e.getValue() )
+                    jvmOptions = product.launcherArgsLinux.jvmModulOptions.stream()
                             .collect( Collectors.joining( " " ) );
                 }
                 vmArgsPlatform.setValue( String.join( " ", vmOptions, jvmOptions ) );
