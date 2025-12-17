@@ -16,13 +16,13 @@
 		Reactor pom for all maven plugins and extensions used to build e4 applications with pure Maven approach.
 	</description>
 	<modules>
-		<module>maven-osgi-exec-plugin</module>
-		<module>maven-osgi-exec-plugin-tests</module>
-		<module>maven-osgi-package-plugin</module>
+		<module>equinox-launch-maven-plugin</module>
+		<module>equinox-launch-maven-plugin-tests</module>
+		<module>equinox-package-maven-plugin</module>
 		<module>tycho-lifecycle-controller</module>
-		<!-- module>maven-osgi-targetplatform-lib</module>
-		<module>maven-osgi-targetplatform-extension</module>
-		<module>maven-osgi-targetplatform-plugin</module -->
+		<module>equinox-targetplatform-maven-lib</module>
+		<module>equinox-targetplatform-maven-extension</module>
+		<module>equinox-targetplatform-maven-plugin</module>
 	</modules>
 
 
