@@ -73,7 +73,6 @@ public class TychoLifecycleController extends AbstractEventSpy {
     private void onEvent(ExecutionEvent event) throws Exception {
         switch (event.getType()) {
             case ProjectDiscoveryStarted:
-                System.out.println( "=========== DISABLE TYCHO ============ " );
                 disableTychoExecutionInAfterProjectsReadLifecycle(event.getSession());
 
                 break;
@@ -81,7 +80,6 @@ public class TychoLifecycleController extends AbstractEventSpy {
             case MojoSucceeded:
                 String artifactId = event.getMojoExecution().getPlugin().getArtifactId();
                 if (PACKAGE_PLUGIN_ARTIFACT.equals(artifactId) && PACKAGE_PLUGIN_GOAL.equals(event.getMojoExecution().getGoal())) {
-                    System.out.println( "=========== START TYCHO ============ " );
                     startTychoProcess(event);
                 }
                 break;
