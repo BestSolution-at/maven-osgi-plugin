@@ -16,7 +16,7 @@ import java.util.jar.JarFile;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
-import org.codehaus.plexus.logging.Logger;
+import org.slf4j.Logger;
 
 /**
  * Provides utility methods to verifies
@@ -52,18 +52,18 @@ final public class OsgiBundleVerifier {
 
 		return isOsgi;
 	}
-	
+
 	public boolean isFeature(Artifact artifact) {
 		if ("pom".equalsIgnoreCase(artifact.getType())) {
 			return false;
 		}
-		
+
 		boolean isFeature = false;
 		try (JarFile f = new JarFile(artifact.getFile())) {
 			return f.getEntry("feature.xml") != null;
 		} catch (IOException e) {
 			logger.error("Can not process artifact " + formatArtifact(artifact) + ". Jar File of " + artifact.getFile()
-			+ " can not be created");
+					+ " can not be created");
 		}
 		return isFeature;
 	}

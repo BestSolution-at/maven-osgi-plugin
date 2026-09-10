@@ -4,66 +4,52 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>at.bestsolution</groupId>
 	<artifactId>maven-osgi-modules</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<maven.version>3.9.0</maven.version>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-core</artifactId>
+				<version>${maven.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-artifact</artifactId>
+				<version>${maven.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.maven.plugin-tools</groupId>
+				<artifactId>maven-plugin-annotations</artifactId>
+				<version>${maven.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.5</version>
+			</dependency>
+			<dependency>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>biz.aQute.bnd</artifactId>
+				<version>3.4.0</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<description>
 		Reactor pom for all maven plugins and extensions used to build e4 applications with pure Maven approach.
 	</description>
 	<modules>
 		<module>equinox-launch-maven-plugin</module>
-		<module>equinox-launch-maven-plugin-tests</module>
 		<module>equinox-package-maven-plugin</module>
 	</modules>
 
-
-	<profiles>
-		<profile>
-			<id>deploy-bestsolution</id>
-			<distributionManagement>
-				<repository>
-					<id>oss-releases</id>
-					<url>https://maven.bestsolution.at/deploy/releases/</url>
-				</repository>
-				<snapshotRepository>
-					<id>oss-snapshots</id>
-					<url>https://maven.bestsolution.at/deploy/snapshots/</url>
-				</snapshotRepository>
-			</distributionManagement>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.5</version>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.sonatype.plugins</groupId>
-						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.7</version>
-						<extensions>true</extensions>
-						<configuration>
-							<serverId>exclipse-releases</serverId>
-							<nexusUrl>http://rattenschwanz.bestsolution.at:8081/nexus</nexusUrl>
-							<skipStaging>true</skipStaging>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>
